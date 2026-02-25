@@ -35,3 +35,7 @@ Híbridos y Derivados:  Warrants, FIBRAS, FHIPOs, Notas estructuradas, CKDs y TR
 
 Optimice su operación fiscal, reduzca riesgos de cumplimiento y brinde un servicio de excelencia a sus clientes con Lumina CF.
  
+
+git remote add origin https://github.com/edangelo2/lumina-cf.git
+git branch -M main
+git push -u origin main
