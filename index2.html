@@ -1,0 +1,3387 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Lumina Americas — Suite tecnológica de capital markets. Plataforma modular multi-producto para la operación integral de mercados de capitales, tesorería, derivados y fondos de inversión.">
+  <title>Lumina Americas — Capital Markets Suite</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+    /* ======================================================================
+       DESIGN SYSTEM — CSS Custom Properties
+       ====================================================================== */
+    :root {
+      --bg-base:          #eef1f7;
+      --bg-card:          #f4f6fb;
+      --shadow-light:     rgba(255, 255, 255, 0.90);
+      --shadow-dark:      rgba(180, 190, 210, 0.60);
+      --accent-primary:   #7c3aed;
+      --accent-secondary: #6d28d9;
+      --accent-glow:      rgba(124, 58, 237, 0.15);
+      --text-primary:     #0f172a;
+      --text-secondary:   #475569;
+      --text-on-dark:     #f1f5f9;
+      --border-subtle:    rgba(124, 58, 237, 0.12);
+
+      --font-display: 'DM Serif Display', Georgia, serif;
+      --font-body:    'DM Sans', system-ui, -apple-system, sans-serif;
+      --font-mono:    'JetBrains Mono', 'Courier New', monospace;
+
+      --radius-xs: 8px;
+      --radius-sm: 12px;
+      --radius-md: 16px;
+      --radius-lg: 20px;
+      --radius-xl: 24px;
+
+      --t-base:   0.20s ease;
+      --t-smooth: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      --t-spring: 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    /* ======================================================================
+       RESET & BASE
+       ====================================================================== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+      background: var(--bg-base);
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    img, svg { display: block; max-width: 100%; }
+    a { text-decoration: none; color: inherit; }
+    button { font-family: var(--font-body); }
+
+    /* ======================================================================
+       NEUMORPHIC BASE COMPONENTS
+       ====================================================================== */
+    .neuro-card {
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      box-shadow:
+         8px  8px 16px var(--shadow-dark),
+        -8px -8px 16px var(--shadow-light);
+    }
+
+    .neuro-btn {
+      box-shadow:
+         4px  4px 10px var(--shadow-dark),
+        -4px -4px 10px var(--shadow-light);
+      border-radius: var(--radius-sm);
+      transition: all var(--t-base);
+      cursor: pointer;
+      border: none;
+    }
+
+    .neuro-btn:hover {
+      box-shadow:
+         2px  2px 6px var(--shadow-dark),
+        -2px -2px 6px var(--shadow-light);
+    }
+
+    .neuro-btn:active {
+      box-shadow:
+        inset  2px  2px 5px var(--shadow-dark),
+        inset -2px -2px 5px var(--shadow-light);
+      transform: scale(0.99);
+    }
+
+    /* ======================================================================
+       LAYOUT UTILITIES
+       ====================================================================== */
+    .container {
+      width: 100%;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    @media (min-width: 640px)  { .container { padding: 0 32px; } }
+    @media (min-width: 1024px) { .container { padding: 0 48px; } }
+    @media (min-width: 1280px) { .container { padding: 0 64px; } }
+
+    .section-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent-primary);
+      margin-bottom: 14px;
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(28px, 3.2vw, 38px);
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+    }
+
+    .section-subtitle {
+      font-size: 16px;
+      color: var(--text-secondary);
+      max-width: 520px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    /* ======================================================================
+       SCROLL ANIMATION TARGETS
+       ====================================================================== */
+    .anim-fade-up {
+      opacity: 0;
+      transform: translateY(28px);
+      transition:
+        opacity  0.62s ease,
+        transform 0.62s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .anim-fade-up.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ======================================================================
+       NAVIGATION — Sticky header
+       ====================================================================== */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(238, 241, 247, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .nav__inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 68px;
+    }
+
+    /* — Logo — */
+    .nav__logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .nav__logo-text {
+      font-family: var(--font-body);
+      font-weight: 300;
+      font-size: 22px;
+      letter-spacing: 0.18em;
+      color: var(--accent-primary);
+      line-height: 1;
+      user-select: none;
+    }
+
+    /* — Desktop links — */
+    .nav__links {
+      display: none;
+      list-style: none;
+      gap: 36px;
+      align-items: center;
+    }
+
+    @media (min-width: 768px) { .nav__links { display: flex; } }
+
+    .nav__links a {
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      letter-spacing: 0.02em;
+      transition: color var(--t-base);
+      position: relative;
+      padding-bottom: 2px;
+    }
+
+    .nav__links a::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--accent-primary);
+      border-radius: 2px;
+      transition: width var(--t-smooth);
+    }
+
+    .nav__links a:hover { color: var(--accent-primary); }
+    .nav__links a:hover::after { width: 100%; }
+    .nav__links a:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 4px; border-radius: 3px; }
+
+    /* — Hamburger — */
+    .nav__hamburger {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      width: 38px;
+      height: 38px;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      background: none;
+      border: none;
+      border-radius: var(--radius-xs);
+      padding: 6px;
+      transition: background var(--t-base);
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .nav__hamburger:hover { background: rgba(124, 58, 237, 0.08); }
+    .nav__hamburger:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+
+    .nav__hamburger span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: var(--text-primary);
+      border-radius: 2px;
+      transform-origin: center;
+      transition: transform var(--t-smooth), opacity var(--t-base);
+    }
+
+    .nav__hamburger.is-open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .nav__hamburger.is-open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+    .nav__hamburger.is-open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    @media (min-width: 768px) { .nav__hamburger { display: none; } }
+
+    /* — Mobile backdrop — */
+    .nav__backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.45);
+      z-index: 199;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--t-smooth);
+    }
+
+    .nav__backdrop.is-open { opacity: 1; pointer-events: auto; }
+
+    /* — Mobile panel — */
+    .nav__mobile {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: min(300px, 82vw);
+      background: var(--bg-card);
+      z-index: 200;
+      transform: translateX(100%);
+      transition: transform var(--t-smooth);
+      display: flex;
+      flex-direction: column;
+      box-shadow: -12px 0 48px rgba(0, 0, 0, 0.14);
+    }
+
+    .nav__mobile.is-open { transform: translateX(0); }
+
+    .nav__mobile-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .nav__mobile-close {
+      background: none;
+      border: none;
+      cursor: pointer;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-xs);
+      color: var(--text-secondary);
+      transition: background var(--t-base), color var(--t-base);
+    }
+
+    .nav__mobile-close:hover { background: rgba(124, 58, 237, 0.08); color: var(--accent-primary); }
+    .nav__mobile-close:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+
+    .nav__mobile-links {
+      list-style: none;
+      padding: 16px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .nav__mobile-links a {
+      display: block;
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--text-primary);
+      padding: 13px 16px;
+      border-radius: var(--radius-sm);
+      transition: background var(--t-base), color var(--t-base);
+    }
+
+    .nav__mobile-links a:hover {
+      background: rgba(124, 58, 237, 0.07);
+      color: var(--accent-primary);
+    }
+
+    /* ======================================================================
+       SECTION 1 — HERO
+       ====================================================================== */
+    .hero {
+      min-height: calc(100svh - 68px);
+      background: radial-gradient(ellipse 100% 80% at 50% -10%, #ede9fe 0%, var(--bg-base) 62%);
+      display: flex;
+      align-items: center;
+      padding: 72px 0 88px;
+    }
+
+    .hero__inner {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 64px;
+      align-items: center;
+    }
+
+    @media (min-width: 1024px) {
+      .hero__inner {
+        grid-template-columns: 54% 46%;
+        gap: 40px;
+      }
+    }
+
+    /* Entry animation */
+    .hero__content > * {
+      opacity: 0;
+      transform: translateY(28px);
+    }
+
+    .hero__content.is-animated > *:nth-child(1) { animation: heroIn 0.65s cubic-bezier(0.22, 1, 0.36, 1) 0.10s forwards; }
+    .hero__content.is-animated > *:nth-child(2) { animation: heroIn 0.65s cubic-bezier(0.22, 1, 0.36, 1) 0.22s forwards; }
+    .hero__content.is-animated > *:nth-child(3) { animation: heroIn 0.65s cubic-bezier(0.22, 1, 0.36, 1) 0.34s forwards; }
+    .hero__content.is-animated > *:nth-child(4) { animation: heroIn 0.65s cubic-bezier(0.22, 1, 0.36, 1) 0.46s forwards; }
+
+    .hero__visual { opacity: 0; }
+    .hero__visual.is-animated { animation: heroIn 0.80s cubic-bezier(0.22, 1, 0.36, 1) 0.38s forwards; }
+
+    @keyframes heroIn {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* — Badge — */
+    .hero__badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      padding: 7px 18px;
+      border-radius: 100px;
+      background: var(--bg-card);
+      box-shadow:
+         4px  4px 10px var(--shadow-dark),
+        -4px -4px 10px var(--shadow-light);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      color: var(--accent-primary);
+      margin-bottom: 28px;
+    }
+
+    .hero__badge-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent-primary);
+      flex-shrink: 0;
+      animation: dotPulse 2.4s ease-in-out infinite;
+    }
+
+    @keyframes dotPulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.55; transform: scale(0.78); }
+    }
+
+    /* — Title — */
+    .hero__title {
+      font-family: var(--font-display);
+      font-size: clamp(36px, 4.8vw, 58px);
+      line-height: 1.08;
+      letter-spacing: -0.025em;
+      color: var(--text-primary);
+      margin-bottom: 22px;
+    }
+
+    .hero__title em {
+      font-style: italic;
+      color: var(--accent-primary);
+    }
+
+    /* — Subtitle — */
+    .hero__subtitle {
+      font-size: clamp(16px, 1.5vw, 18px);
+      color: var(--text-secondary);
+      line-height: 1.75;
+      margin-bottom: 40px;
+      max-width: 500px;
+    }
+
+    /* — CTAs — */
+    .hero__ctas {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 15px 30px;
+      background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+      color: #fff;
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      border-radius: var(--radius-sm);
+      border: none;
+      cursor: pointer;
+      box-shadow:
+         4px  4px 12px var(--shadow-dark),
+        -3px -3px  8px var(--shadow-light),
+           0  4px 24px rgba(124, 58, 237, 0.25);
+      transition: transform var(--t-smooth), box-shadow var(--t-smooth);
+      text-decoration: none;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow:
+         6px  8px 20px var(--shadow-dark),
+        -3px -3px  8px var(--shadow-light),
+           0  8px 32px rgba(124, 58, 237, 0.35);
+    }
+
+    .btn-primary:focus-visible { outline: 3px solid var(--accent-primary); outline-offset: 3px; }
+    .btn-primary svg { transition: transform var(--t-base); flex-shrink: 0; }
+    .btn-primary:hover svg { transform: translateX(3px); }
+
+    .btn-text {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14.5px;
+      font-weight: 500;
+      color: var(--accent-primary);
+      transition: gap var(--t-base);
+      text-decoration: none;
+    }
+
+    .btn-text:hover { gap: 10px; }
+    .btn-text:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; border-radius: 4px; }
+
+    /* — Hero visual: module grid — */
+    .hero__visual {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modules-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 460px;
+      margin: 0 auto;
+    }
+
+    .hero-conn-svg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 1;
+      overflow: visible;
+    }
+
+    .hero-conn-path {
+      fill: none;
+      stroke: var(--accent-primary);
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-dasharray: 600;
+      stroke-dashoffset: 600;
+    }
+
+    @keyframes pathDraw {
+      0%   { stroke-dashoffset: 600; stroke-opacity: 0;    }
+      18%  { stroke-dashoffset: 420; stroke-opacity: 0.22; }
+      78%  { stroke-dashoffset: 80;  stroke-opacity: 0.22; }
+      100% { stroke-dashoffset: 0;   stroke-opacity: 0;    }
+    }
+
+    .modules-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .module-chip {
+      background: var(--bg-card);
+      border-radius: 14px;
+      box-shadow:
+         5px  5px 10px var(--shadow-dark),
+        -5px -5px 10px var(--shadow-light);
+      padding: 18px 10px 14px;
+      text-align: center;
+      transition: transform var(--t-smooth), box-shadow var(--t-smooth);
+      cursor: default;
+      user-select: none;
+    }
+
+    .module-chip:hover {
+      transform: translateY(-5px) scale(1.02);
+      box-shadow:
+         6px 10px 18px var(--shadow-dark),
+        -4px -4px  8px var(--shadow-light),
+           0  6px 20px var(--accent-glow);
+      animation-play-state: paused;
+    }
+
+    @keyframes chipPulse {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50%       { transform: translateY(-3px) scale(1.015); }
+    }
+
+    .module-chip:nth-child(1) { animation: chipPulse 5.0s ease-in-out 0.0s infinite; }
+    .module-chip:nth-child(2) { animation: chipPulse 5.0s ease-in-out 0.6s infinite; }
+    .module-chip:nth-child(3) { animation: chipPulse 5.0s ease-in-out 1.2s infinite; }
+    .module-chip:nth-child(4) { animation: chipPulse 5.0s ease-in-out 1.8s infinite; }
+    .module-chip:nth-child(5) { animation: chipPulse 5.0s ease-in-out 0.9s infinite; }
+    .module-chip:nth-child(6) { animation: chipPulse 5.0s ease-in-out 0.3s infinite; }
+    .module-chip:nth-child(7) { animation: chipPulse 5.0s ease-in-out 1.5s infinite; }
+    .module-chip:nth-child(8) { animation: chipPulse 5.0s ease-in-out 2.1s infinite; }
+    .module-chip:nth-child(9) { animation: chipPulse 5.0s ease-in-out 0.7s infinite; }
+
+    .module-chip__icon {
+      width: 28px;
+      height: 28px;
+      margin: 0 auto 8px;
+      color: var(--accent-primary);
+      opacity: 0.82;
+    }
+
+    .module-chip__sigla {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--accent-primary);
+      letter-spacing: 0.04em;
+      line-height: 1.2;
+    }
+
+    .module-chip__name {
+      font-size: 10px;
+      color: var(--text-secondary);
+      line-height: 1.3;
+      margin-top: 3px;
+    }
+
+    /* ======================================================================
+       SECTION 2 — VALUE PROPOSITION (#valor)
+       ====================================================================== */
+    .valor {
+      padding: 104px 0 112px;
+    }
+
+    .valor__grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+
+    @media (min-width: 640px) { .valor__grid { grid-template-columns: repeat(2, 1fr); } }
+
+    .valor-card {
+      padding: 36px 32px 30px;
+      transition: transform var(--t-smooth), box-shadow var(--t-smooth);
+    }
+
+    .valor-card:hover {
+      transform: translateY(-5px);
+      box-shadow:
+        10px 14px 28px var(--shadow-dark),
+        -6px -6px 14px var(--shadow-light),
+           0  8px 32px var(--accent-glow);
+    }
+
+    .valor-card__icon {
+      width: 48px;
+      height: 48px;
+      color: var(--accent-primary);
+      margin-bottom: 22px;
+    }
+
+    .valor-card__title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 10px;
+      letter-spacing: -0.01em;
+    }
+
+    .valor-card__desc {
+      font-size: 14.5px;
+      color: var(--text-secondary);
+      line-height: 1.65;
+    }
+
+    .valor-card__line {
+      margin-top: 24px;
+      height: 2px;
+      width: 40px;
+      border-radius: 2px;
+      background: linear-gradient(90deg, var(--accent-primary), transparent);
+    }
+
+    /* ======================================================================
+       SECTION 3 — MODULAR ARCHITECTURE (#arquitectura)
+       ====================================================================== */
+    .arquitectura {
+      padding: 104px 0 116px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Subtle dot texture */
+    .arquitectura::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(circle at center, var(--accent-primary) 1px, transparent 1px);
+      background-size: 32px 32px;
+      opacity: 0.04;
+      pointer-events: none;
+    }
+
+    .arquitectura__inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* — DSF bar — */
+    .dsf-bar {
+      background: linear-gradient(130deg, #7c3aed 0%, #5b21b6 100%);
+      border-radius: var(--radius-md);
+      padding: 22px 32px;
+      margin-bottom: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      box-shadow:
+           0  8px 32px rgba(109, 40, 217, 0.28),
+         8px  8px 16px var(--shadow-dark);
+    }
+
+    .dsf-bar__content {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .dsf-bar__label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.6);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      background: rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 6px;
+      padding: 4px 10px;
+      white-space: nowrap;
+    }
+
+    .dsf-bar__items {
+      font-family: var(--font-body);
+      font-size: 15px;
+      font-weight: 600;
+      color: #fff;
+      letter-spacing: 0.01em;
+    }
+
+    .dsf-bar__items span {
+      color: rgba(255, 255, 255, 0.68);
+      font-weight: 400;
+    }
+
+    .dsf-bar__badge {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 500;
+      color: #fff;
+      background: rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.32);
+      border-radius: 100px;
+      padding: 5px 16px;
+      white-space: nowrap;
+      letter-spacing: 0.1em;
+      flex-shrink: 0;
+    }
+
+    /* — Modules arch grid — */
+    .modules-arch-wrapper {
+      position: relative;
+    }
+
+    .arch-conn-svg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: visible;
+    }
+
+    .arch-conn-path {
+      fill: none;
+      stroke: var(--accent-primary);
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-dasharray: 1200;
+      stroke-dashoffset: 1200;
+    }
+
+    @keyframes archDraw {
+      0%   { stroke-dashoffset: 1200; stroke-opacity: 0;    }
+      18%  { stroke-dashoffset: 900;  stroke-opacity: 0.28; }
+      78%  { stroke-dashoffset: 200;  stroke-opacity: 0.28; }
+      100% { stroke-dashoffset: 0;    stroke-opacity: 0;    }
+    }
+
+    .modules-arch-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    @media (min-width: 640px)  { .modules-arch-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (min-width: 1024px) { .modules-arch-grid { grid-template-columns: repeat(4, 1fr); } }
+
+    .module-card {
+      padding: 24px 22px 22px;
+      border-left: 3px solid transparent;
+      transition:
+        transform     var(--t-smooth),
+        box-shadow    var(--t-smooth),
+        border-color  var(--t-smooth);
+      cursor: default;
+    }
+
+    .module-card:hover {
+      transform: translateY(-6px);
+      box-shadow:
+         8px 16px 32px var(--shadow-dark),
+        -4px -4px 12px var(--shadow-light),
+           0  8px 32px var(--accent-glow);
+      border-left-color: var(--accent-primary);
+    }
+
+    .module-card:focus-visible {
+      outline: 2px solid var(--accent-primary);
+      outline-offset: 3px;
+    }
+
+    .module-card__header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .module-card__name {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.35;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .module-card__badge {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--accent-primary);
+      background: var(--accent-glow);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-xs);
+      padding: 3px 8px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .module-card__icon {
+      width: 32px;
+      height: 32px;
+      color: var(--accent-primary);
+      margin-bottom: 12px;
+      opacity: 0.85;
+      transition: opacity var(--t-base);
+    }
+
+    .module-card:hover .module-card__icon { opacity: 1; }
+
+    .module-card__desc {
+      font-size: 12.5px;
+      color: var(--text-secondary);
+      line-height: 1.65;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ====================================================================
+       NAVIGATION — Sticky header
+       ==================================================================== -->
+  <nav class="nav" role="navigation" aria-label="Navegación principal">
+    <div class="container">
+      <div class="nav__inner">
+
+        <!-- Logo: constellation SVG + wordmark -->
+        <a href="#" class="nav__logo" aria-label="Lumina Americas — Inicio">
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none" aria-hidden="true" focusable="false">
+            <circle cx="18" cy="6"  r="2.4" fill="#7c3aed"/>
+            <circle cx="30" cy="14" r="1.9" fill="#7c3aed" opacity="0.70"/>
+            <circle cx="27" cy="29" r="2.4" fill="#7c3aed"/>
+            <circle cx="9"  cy="28" r="1.9" fill="#7c3aed" opacity="0.65"/>
+            <circle cx="6"  cy="13" r="2.4" fill="#7c3aed"/>
+            <circle cx="18" cy="20" r="3.0" fill="#7c3aed" opacity="0.92"/>
+            <line x1="18" y1="6"  x2="30" y2="14" stroke="#7c3aed" stroke-width="0.9" stroke-opacity="0.28"/>
+            <line x1="30" y1="14" x2="27" y2="29" stroke="#7c3aed" stroke-width="0.9" stroke-opacity="0.28"/>
+            <line x1="27" y1="29" x2="9"  y2="28" stroke="#7c3aed" stroke-width="0.9" stroke-opacity="0.28"/>
+            <line x1="9"  y1="28" x2="6"  y2="13" stroke="#7c3aed" stroke-width="0.9" stroke-opacity="0.28"/>
+            <line x1="6"  y1="13" x2="18" y2="6"  stroke="#7c3aed" stroke-width="0.9" stroke-opacity="0.28"/>
+            <line x1="18" y1="20" x2="18" y2="6"  stroke="#7c3aed" stroke-width="1.1" stroke-opacity="0.55"/>
+            <line x1="18" y1="20" x2="30" y2="14" stroke="#7c3aed" stroke-width="1.1" stroke-opacity="0.55"/>
+            <line x1="18" y1="20" x2="27" y2="29" stroke="#7c3aed" stroke-width="1.1" stroke-opacity="0.55"/>
+            <line x1="18" y1="20" x2="9"  y2="28" stroke="#7c3aed" stroke-width="1.1" stroke-opacity="0.55"/>
+            <line x1="18" y1="20" x2="6"  y2="13" stroke="#7c3aed" stroke-width="1.1" stroke-opacity="0.55"/>
+          </svg>
+          <span class="nav__logo-text">lumina</span>
+        </a>
+
+        <!-- Desktop nav links -->
+        <ul class="nav__links">
+          <li><a href="#arquitectura">Arquitectura</a></li>
+          <li><a href="#instalaciones">Instalaciones</a></li>
+          <li><a href="#tecnologia">Tecnología</a></li>
+          <li><a href="#contacto">Contacto</a></li>
+        </ul>
+
+        <!-- Hamburger (mobile only) -->
+        <button
+          class="nav__hamburger"
+          id="hamburgerBtn"
+          aria-label="Abrir menú de navegación"
+          aria-expanded="false"
+          aria-controls="mobileNav"
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile nav backdrop -->
+  <div class="nav__backdrop" id="navBackdrop" aria-hidden="true"></div>
+
+  <!-- Mobile nav panel -->
+  <div
+    class="nav__mobile"
+    id="mobileNav"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Menú de navegación"
+    aria-hidden="true"
+  >
+    <div class="nav__mobile-header">
+      <a href="#" class="nav__logo" aria-label="Lumina Americas" tabindex="-1">
+        <svg width="26" height="26" viewBox="0 0 36 36" fill="none" aria-hidden="true">
+          <circle cx="18" cy="6"  r="2.4" fill="#7c3aed"/>
+          <circle cx="30" cy="14" r="1.9" fill="#7c3aed" opacity="0.70"/>
+          <circle cx="27" cy="29" r="2.4" fill="#7c3aed"/>
+          <circle cx="9"  cy="28" r="1.9" fill="#7c3aed" opacity="0.65"/>
+          <circle cx="6"  cy="13" r="2.4" fill="#7c3aed"/>
+          <circle cx="18" cy="20" r="3.0" fill="#7c3aed" opacity="0.92"/>
+          <line x1="18" y1="20" x2="18" y2="6"  stroke="#7c3aed" stroke-width="1.1" stroke-opacity="0.55"/>
+          <line x1="18" y1="20" x2="30" y2="14" stroke="#7c3aed" stroke-width="1.1" stroke-opacity="0.55"/>
+          <line x1="18" y1="20" x2="27" y2="29" stroke="#7c3aed" stroke-width="1.1" stroke-opacity="0.55"/>
+          <line x1="18" y1="20" x2="9"  y2="28" stroke="#7c3aed" stroke-width="1.1" stroke-opacity="0.55"/>
+          <line x1="18" y1="20" x2="6"  y2="13" stroke="#7c3aed" stroke-width="1.1" stroke-opacity="0.55"/>
+        </svg>
+        <span class="nav__logo-text" style="font-size:18px;">lumina</span>
+      </a>
+      <button class="nav__mobile-close" id="mobileClose" aria-label="Cerrar menú">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+          <path d="M2 2L16 16M16 2L2 16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+    <ul class="nav__mobile-links">
+      <li><a href="#arquitectura">Arquitectura</a></li>
+      <li><a href="#instalaciones">Instalaciones</a></li>
+      <li><a href="#tecnologia">Tecnología</a></li>
+      <li><a href="#contacto">Contacto</a></li>
+    </ul>
+  </div>
+
+
+  <!-- ====================================================================
+       SECTION 1 — HERO
+       ==================================================================== -->
+  <section class="hero" aria-label="Presentación de Lumina Americas">
+    <div class="container">
+      <div class="hero__inner">
+
+        <!-- Left: text content -->
+        <div class="hero__content" id="heroContent">
+
+          <div class="hero__badge" role="text" aria-label="Suite F2B de Capital Markets">
+            <span class="hero__badge-dot" aria-hidden="true"></span>
+            Suite F2B · Capital Markets
+          </div>
+
+          <h1 class="hero__title">
+            La suite que <em>conecta</em><br>tu front con tu back.
+          </h1>
+
+          <p class="hero__subtitle">
+            Lumina es una plataforma modular, multi-producto y multi-entidad para la
+            operación integral de mercados de capitales, tesorería, derivados y fondos de inversión.
+          </p>
+
+          <div class="hero__ctas">
+            <a href="#arquitectura" class="btn-primary" aria-label="Explorar la Suite Lumina Americas">
+              Explorar la Suite
+              <svg width="17" height="17" viewBox="0 0 17 17" fill="none" aria-hidden="true">
+                <path d="M3.5 8.5H13.5M9.5 4.5L13.5 8.5L9.5 12.5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+            <a href="#instalaciones" class="btn-text" aria-label="Ver instalaciones típicas de Lumina">
+              Ver Instalaciones Típicas
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M3 8H13M9 4L13 8L9 12" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+          </div>
+
+        </div>
+
+        <!-- Right: module chips grid -->
+        <div class="hero__visual" id="heroVisual" aria-hidden="true">
+          <div class="modules-wrapper" id="modulesWrapper">
+
+            <!-- SVG connection lines — drawn by JS -->
+            <svg class="hero-conn-svg" id="heroConnSvg"></svg>
+
+            <!-- 3×3 module chips -->
+            <div class="modules-grid" id="modulesGrid">
+
+              <!-- LOM -->
+              <div class="module-chip">
+                <div class="module-chip__icon">
+                  <svg viewBox="0 0 28 28" fill="none">
+                    <rect x="3" y="3" width="11" height="14" rx="2" stroke="currentColor" stroke-width="1.6" fill="none"/>
+                    <line x1="6" y1="8"  x2="11" y2="8"  stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+                    <line x1="6" y1="11" x2="9"  y2="11" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+                    <path d="M5.5 13.5 L7.5 15.5 L11.5 11.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                    <line x1="17" y1="7"  x2="25" y2="7"  stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+                    <line x1="17" y1="11" x2="23" y2="11" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+                    <line x1="17" y1="15" x2="25" y2="15" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+                    <line x1="17" y1="19" x2="22" y2="19" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+                  </svg>
+                </div>
+                <div class="module-chip__sigla">LOM</div>
+                <div class="module-chip__name">Order Mgmt</div>
+              </div>
+
+              <!-- LOR -->
+              <div class="module-chip">
+                <div class="module-chip__icon">
+                  <svg viewBox="0 0 28 28" fill="none">
+                    <circle cx="5"  cy="14" r="3"   stroke="currentColor" stroke-width="1.5" fill="none"/>
+                    <circle cx="23" cy="7"  r="3"   stroke="currentColor" stroke-width="1.5" fill="none"/>
+                    <circle cx="23" cy="21" r="3"   stroke="currentColor" stroke-width="1.5" fill="none"/>
+                    <path d="M8 13 Q15.5 9 20 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+                    <path d="M18 6 L20.2 8 L18 10"  stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M8 15 Q15.5 19 20 20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+                    <path d="M18 18 L20.2 20 L18 22" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+                <div class="module-chip__sigla">LOR</div>
+                <div class="module-chip__name">Order Routing</div>
+              </div>
+
+              <!-- LFE -->
+              <div class="module-chip">
+                <div class="module-chip__icon">
+                  <svg viewBox="0 0 28 28" fill="none">
+                    <path d="M3 22 Q7 12 14 12 Q21 12 25 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" fill="none"/>
+                    <circle cx="14" cy="12" r="2.5" fill="currentColor"/>
+                    <path d="M7 26 Q11 19 14 19 Q17 19 21 14" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" fill="none" opacity="0.5"/>
+                    <path d="M1 18 Q6 8 14 8 Q22 8 27 2" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" fill="none" opacity="0.3"/>
+                  </svg>
+                </div>
+                <div class="module-chip__sigla">LFE</div>
+                <div class="module-chip__name">FIX Engine</div>
+              </div>
+
+              <!-- Treasury -->
+              <div class="module-chip">
+                <div class="module-chip__icon">
+                  <svg viewBox="0 0 28 28" fill="none">
+                    <polyline points="2,22 8,14 13,16.5 19,9 25,12.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                    <circle cx="8"  cy="14"   r="1.8" fill="currentColor"/>
+                    <circle cx="19" cy="9"    r="1.8" fill="currentColor"/>
+                    <line x1="2" y1="24.5" x2="26" y2="24.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" opacity="0.28"/>
+                  </svg>
+                </div>
+                <div class="module-chip__sigla">Treasury</div>
+                <div class="module-chip__name">Front Office</div>
+              </div>
+
+              <!-- Operations -->
+              <div class="module-chip">
+                <div class="module-chip__icon">
+                  <svg viewBox="0 0 28 28" fill="none">
+                    <rect x="2"  y="5"  width="24" height="7"   rx="2.5" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                    <rect x="2"  y="14" width="24" height="7"   rx="2.5" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                    <rect x="2"  y="23" width="24" height="3.5" rx="1.5" stroke="currentColor" stroke-width="1.4" fill="none" opacity="0.4"/>
+                    <circle cx="22" cy="8.5"  r="1.4" fill="currentColor" opacity="0.5"/>
+                    <circle cx="22" cy="17.5" r="1.4" fill="currentColor"/>
+                    <line x1="6" y1="17.5" x2="16" y2="17.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+                  </svg>
+                </div>
+                <div class="module-chip__sigla">Ops</div>
+                <div class="module-chip__name">Operations</div>
+              </div>
+
+              <!-- LMF -->
+              <div class="module-chip">
+                <div class="module-chip__icon">
+                  <svg viewBox="0 0 28 28" fill="none">
+                    <path d="M14 3 A11 11 0 0 1 25 14 L14 14 Z" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linejoin="round"/>
+                    <path d="M25 14 A11 11 0 0 1 9.5 24.5 L14 14 Z" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linejoin="round" opacity="0.7"/>
+                    <path d="M9.5 24.5 A11 11 0 0 1 3 14 L14 14 Z" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linejoin="round" opacity="0.5"/>
+                    <path d="M3 14 A11 11 0 0 1 14 3 L14 14 Z" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linejoin="round" opacity="0.3"/>
+                    <circle cx="14" cy="14" r="2.5" fill="currentColor"/>
+                  </svg>
+                </div>
+                <div class="module-chip__sigla">LMF</div>
+                <div class="module-chip__name">Mutual Funds</div>
+              </div>
+
+              <!-- LAM -->
+              <div class="module-chip">
+                <div class="module-chip__icon">
+                  <svg viewBox="0 0 28 28" fill="none">
+                    <line x1="14" y1="3"  x2="14" y2="25" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                    <line x1="7"  y1="7"  x2="21" y2="7"  stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                    <path d="M7 7 L3.5 14.5 Q7 19 10.5 14.5 Z"  stroke="currentColor" stroke-width="1.4" fill="none" stroke-linejoin="round"/>
+                    <path d="M21 7 L17.5 14.5 Q21 20.5 24.5 14.5 Z" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linejoin="round"/>
+                    <line x1="10.5" y1="25" x2="17.5" y2="25" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                  </svg>
+                </div>
+                <div class="module-chip__sigla">LAM</div>
+                <div class="module-chip__name">Asset Mgmt</div>
+              </div>
+
+              <!-- MEC -->
+              <div class="module-chip">
+                <div class="module-chip__icon">
+                  <svg viewBox="0 0 28 28" fill="none">
+                    <rect x="2"  y="11" width="8" height="6" rx="2" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                    <rect x="18" y="11" width="8" height="6" rx="2" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                    <line x1="10" y1="14" x2="18" y2="14" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+                    <line x1="5"  y1="9"  x2="5"  y2="7"  stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+                    <line x1="8"  y1="9"  x2="8"  y2="7"  stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+                    <line x1="20" y1="9"  x2="20" y2="7"  stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+                    <line x1="23" y1="9"  x2="23" y2="7"  stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+                    <circle cx="14" cy="21" r="1.8" fill="currentColor" opacity="0.35"/>
+                  </svg>
+                </div>
+                <div class="module-chip__sigla">MEC</div>
+                <div class="module-chip__name">Mex Exchange</div>
+              </div>
+
+              <!-- LSM -->
+              <div class="module-chip">
+                <div class="module-chip__icon">
+                  <svg viewBox="0 0 28 28" fill="none">
+                    <path d="M16 2.5 L7 16 L13 16 L12 25.5 L21 12 L15 12 Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" fill="none"/>
+                    <line x1="2.5" y1="10" x2="6" y2="10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" opacity="0.5"/>
+                    <line x1="1.5" y1="14" x2="6" y2="14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" opacity="0.35"/>
+                    <line x1="2.5" y1="18" x2="6" y2="18" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" opacity="0.2"/>
+                  </svg>
+                </div>
+                <div class="module-chip__sigla">LSM</div>
+                <div class="module-chip__name">Straight to Mkt</div>
+              </div>
+
+            </div><!-- /modules-grid -->
+          </div><!-- /modules-wrapper -->
+        </div><!-- /hero__visual -->
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ====================================================================
+       SECTION 2 — VALUE PROPOSITION
+       ==================================================================== -->
+  <section class="valor" id="valor" aria-labelledby="valorTitle">
+    <div class="container">
+
+      <header class="section-header anim-fade-up">
+        <p class="section-eyebrow">Propuesta de Valor</p>
+        <h2 class="section-title" id="valorTitle">
+          Una plataforma. Todas las operaciones.
+        </h2>
+        <p class="section-subtitle">
+          Diseñada para instituciones financieras que necesitan flexibilidad sin sacrificar control.
+        </p>
+      </header>
+
+      <div class="valor__grid">
+
+        <!-- Card 1 — Multi-Producto -->
+        <article
+          class="neuro-card valor-card anim-fade-up"
+          tabindex="0"
+          aria-label="Característica: Multi-Producto"
+        >
+          <div class="valor-card__icon" aria-hidden="true">
+            <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+              <rect x="5"  y="5"  width="16" height="16" rx="3.5" stroke="currentColor" stroke-width="2" fill="none"/>
+              <rect x="27" y="5"  width="16" height="16" rx="3.5" stroke="currentColor" stroke-width="2" fill="none"/>
+              <rect x="5"  y="27" width="16" height="16" rx="3.5" stroke="currentColor" stroke-width="2" fill="none"/>
+              <rect x="27" y="27" width="16" height="16" rx="3.5" stroke="currentColor" stroke-width="2" fill="none"/>
+              <line x1="24" y1="17" x2="24" y2="31" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+              <line x1="17" y1="24" x2="31" y2="24" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+              <circle cx="24" cy="24" r="4" fill="currentColor"/>
+            </svg>
+          </div>
+          <h3 class="valor-card__title">Multi-Producto</h3>
+          <p class="valor-card__desc">
+            Renta fija, capitales, FX, derivados OTC, futuros, fondos de inversión y notas
+            estructuradas operando bajo una misma plataforma.
+          </p>
+          <div class="valor-card__line" aria-hidden="true"></div>
+        </article>
+
+        <!-- Card 2 — Multi-Entidad -->
+        <article
+          class="neuro-card valor-card anim-fade-up"
+          tabindex="0"
+          aria-label="Característica: Multi-Entidad"
+        >
+          <div class="valor-card__icon" aria-hidden="true">
+            <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+              <circle cx="24" cy="24" r="20" stroke="currentColor" stroke-width="1.5" stroke-opacity="0.22" fill="none"/>
+              <circle cx="24" cy="24" r="13" stroke="currentColor" stroke-width="1.5" stroke-opacity="0.45" fill="none"/>
+              <circle cx="24" cy="24" r="6"  stroke="currentColor" stroke-width="2"   fill="none"/>
+              <circle cx="24" cy="4"  r="3"   fill="currentColor"/>
+              <circle cx="42" cy="24" r="2.5" fill="currentColor" opacity="0.65"/>
+              <circle cx="24" cy="44" r="2.5" fill="currentColor" opacity="0.65"/>
+              <circle cx="6"  cy="24" r="3"   fill="currentColor"/>
+              <line x1="24" y1="18" x2="24" y2="7"    stroke="currentColor" stroke-width="1.5" stroke-opacity="0.55"/>
+              <line x1="30" y1="24" x2="39.5" y2="24" stroke="currentColor" stroke-width="1.5" stroke-opacity="0.55"/>
+              <line x1="24" y1="30" x2="24" y2="41.5" stroke="currentColor" stroke-width="1.5" stroke-opacity="0.55"/>
+              <line x1="18" y1="24" x2="8.5" y2="24"  stroke="currentColor" stroke-width="1.5" stroke-opacity="0.55"/>
+            </svg>
+          </div>
+          <h3 class="valor-card__title">Multi-Entidad</h3>
+          <p class="valor-card__desc">
+            Consolida múltiples entidades y libros con segregación de información por
+            perfiles, roles y unidades de negocio.
+          </p>
+          <div class="valor-card__line" aria-hidden="true"></div>
+        </article>
+
+        <!-- Card 3 — Workflow F2B -->
+        <article
+          class="neuro-card valor-card anim-fade-up"
+          tabindex="0"
+          aria-label="Característica: Workflow F2B Configurable"
+        >
+          <div class="valor-card__icon" aria-hidden="true">
+            <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+              <rect x="2"  y="18" width="12" height="12" rx="3" stroke="currentColor" stroke-width="2" fill="none"/>
+              <rect x="18" y="14" width="12" height="20" rx="3" stroke="currentColor" stroke-width="2" fill="none"/>
+              <rect x="34" y="18" width="12" height="12" rx="3" stroke="currentColor" stroke-width="2" fill="none"/>
+              <line x1="14" y1="24" x2="18" y2="24" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M15.8 21.8 L18.2 24 L15.8 26.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              <line x1="30" y1="24" x2="34" y2="24" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M31.8 21.8 L34.2 24 L31.8 26.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="8"  cy="24" r="2"   fill="currentColor"/>
+              <circle cx="24" cy="20" r="1.8" fill="currentColor"/>
+              <circle cx="24" cy="24" r="1.8" fill="currentColor"/>
+              <circle cx="24" cy="28" r="1.8" fill="currentColor"/>
+              <circle cx="40" cy="24" r="2"   fill="currentColor"/>
+            </svg>
+          </div>
+          <h3 class="valor-card__title">Workflow F2B Configurable</h3>
+          <p class="valor-card__desc">
+            El flujo front-to-back se adapta a la operatoria de cada institución,
+            sin necesidad de desarrollos a medida.
+          </p>
+          <div class="valor-card__line" aria-hidden="true"></div>
+        </article>
+
+        <!-- Card 4 — Funcionalidad Cross -->
+        <article
+          class="neuro-card valor-card anim-fade-up"
+          tabindex="0"
+          aria-label="Característica: Funcionalidad Cross"
+        >
+          <div class="valor-card__icon" aria-hidden="true">
+            <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+              <circle cx="24" cy="10" r="4.5" stroke="currentColor" stroke-width="2" fill="none"/>
+              <circle cx="10" cy="34" r="4.5" stroke="currentColor" stroke-width="2" fill="none"/>
+              <circle cx="38" cy="34" r="4.5" stroke="currentColor" stroke-width="2" fill="none"/>
+              <circle cx="24" cy="25" r="4"   fill="currentColor" opacity="0.88"/>
+              <line x1="24" y1="14.5" x2="24" y2="21"  stroke="currentColor" stroke-width="1.8" stroke-opacity="0.65"/>
+              <line x1="14" y1="31"   x2="20" y2="27"  stroke="currentColor" stroke-width="1.8" stroke-opacity="0.65"/>
+              <line x1="34" y1="31"   x2="28" y2="27"  stroke="currentColor" stroke-width="1.8" stroke-opacity="0.65"/>
+              <circle cx="5"  cy="17" r="2.5" fill="currentColor" opacity="0.42"/>
+              <circle cx="43" cy="17" r="2.5" fill="currentColor" opacity="0.42"/>
+              <circle cx="24" cy="44" r="2.5" fill="currentColor" opacity="0.42"/>
+              <line x1="21.5" y1="12.5" x2="7"  y2="18"   stroke="currentColor" stroke-width="1.3" stroke-opacity="0.32"/>
+              <line x1="26.5" y1="12.5" x2="41" y2="18"   stroke="currentColor" stroke-width="1.3" stroke-opacity="0.32"/>
+              <line x1="11"   y1="38.5" x2="22" y2="43"   stroke="currentColor" stroke-width="1.3" stroke-opacity="0.32"/>
+              <line x1="37"   y1="38.5" x2="26" y2="43"   stroke="currentColor" stroke-width="1.3" stroke-opacity="0.32"/>
+            </svg>
+          </div>
+          <h3 class="valor-card__title">Funcionalidad Cross</h3>
+          <p class="valor-card__desc">
+            Instrumentos, clientes, market data y motor contable compartidos
+            como capa común a todos los módulos.
+          </p>
+          <div class="valor-card__line" aria-hidden="true"></div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ====================================================================
+       SECTION 3 — MODULAR ARCHITECTURE
+       ==================================================================== -->
+  <section class="arquitectura" id="arquitectura" aria-labelledby="arquitecturaTitle">
+    <div class="container arquitectura__inner">
+
+      <header class="section-header anim-fade-up">
+        <p class="section-eyebrow">Arquitectura Modular</p>
+        <h2 class="section-title" id="arquitecturaTitle">
+          Una arquitectura diseñada para ensamblar
+        </h2>
+        <p class="section-subtitle">
+          Cada módulo es una pieza. Cada institución elige su configuración óptima.
+        </p>
+      </header>
+
+      <!-- Data Set Framework bar -->
+      <div class="dsf-bar anim-fade-up" role="region" aria-label="Capa base: Data Set Framework">
+        <div class="dsf-bar__content">
+          <span class="dsf-bar__label">Data Set Framework</span>
+          <span class="dsf-bar__items">
+            Instrumentos
+            <span>· Market Data · Clientes / Contrapartes · Entidades / Libros</span>
+          </span>
+        </div>
+        <span class="dsf-bar__badge" aria-label="Capa Común">Capa Común</span>
+      </div>
+
+      <!-- Modules grid -->
+      <div class="modules-arch-wrapper">
+
+        <!-- SVG connection lines — drawn by JS -->
+        <svg class="arch-conn-svg" id="archConnSvg" aria-hidden="true"></svg>
+
+        <div
+          class="modules-arch-grid"
+          id="modulesArchGrid"
+          role="list"
+          aria-label="Módulos de la suite Lumina Americas"
+        >
+
+          <!-- 1. LOM -->
+          <article class="neuro-card module-card anim-fade-up" data-module="LOM" role="listitem" tabindex="0" aria-label="Lumina Order Management">
+            <div class="module-card__header">
+              <h3 class="module-card__name">Lumina Order Management</h3>
+              <span class="module-card__badge" aria-hidden="true">LOM</span>
+            </div>
+            <div class="module-card__icon" aria-hidden="true">
+              <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                <rect x="4" y="3" width="18" height="22" rx="3" stroke="currentColor" stroke-width="1.7" fill="none"/>
+                <line x1="8"  y1="10" x2="18" y2="10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                <line x1="8"  y1="14" x2="15" y2="14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                <path d="M8 19 L11 22 L17.5 16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="26" cy="24" r="5" fill="var(--bg-base)" stroke="currentColor" stroke-width="1.5"/>
+                <path d="M24 24 L25.5 25.5 L28.5 22.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <p class="module-card__desc">
+              Captura, aprobación y ejecución de órdenes multi-producto. Control de prácticas de
+              ventas, saldos en línea y workflow configurable. API REST para canales digitales.
+            </p>
+          </article>
+
+          <!-- 2. Treasury / Front Office -->
+          <article class="neuro-card module-card anim-fade-up" data-module="Treasury" role="listitem" tabindex="0" aria-label="Lumina Treasury Front Office">
+            <div class="module-card__header">
+              <h3 class="module-card__name">Lumina Treasury / Front Office</h3>
+              <span class="module-card__badge" aria-hidden="true">Treasury</span>
+            </div>
+            <div class="module-card__icon" aria-hidden="true">
+              <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                <polyline points="2,23 8,15 13,17.5 20,9.5 28,13" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                <circle cx="8"  cy="15"   r="2"   fill="currentColor"/>
+                <circle cx="20" cy="9.5"  r="2"   fill="currentColor"/>
+                <line x1="2" y1="26" x2="30" y2="26" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" opacity="0.28"/>
+                <line x1="8"  y1="26" x2="8"  y2="27.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" opacity="0.28"/>
+                <line x1="16" y1="26" x2="16" y2="27.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" opacity="0.28"/>
+                <line x1="24" y1="26" x2="24" y2="27.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" opacity="0.28"/>
+              </svg>
+            </div>
+            <p class="module-card__desc">
+              Portafolios propios, administrados y de mandato. PnL diario/mensual/anual, VaR,
+              Exposición, Carteras Óptimas y Escenarios de Stress.
+            </p>
+          </article>
+
+          <!-- 3. LAM -->
+          <article class="neuro-card module-card anim-fade-up" data-module="LAM" role="listitem" tabindex="0" aria-label="Lumina Asset Management">
+            <div class="module-card__header">
+              <h3 class="module-card__name">Lumina Asset Management</h3>
+              <span class="module-card__badge" aria-hidden="true">LAM</span>
+            </div>
+            <div class="module-card__icon" aria-hidden="true">
+              <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                <line x1="16" y1="3"  x2="16" y2="29" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+                <line x1="7"  y1="7"  x2="25" y2="7"  stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+                <path d="M7 7 L3.5 15 Q7 20.5 10.5 15 Z"  stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round"/>
+                <path d="M25 7 L21.5 15 Q25 22 28.5 15 Z" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round"/>
+                <line x1="11" y1="29" x2="21" y2="29" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <p class="module-card__desc">
+              Rebalanceo automático de carteras según mandato de inversión. Portfolio modelling,
+              gestión de liquidez y despacho de órdenes a LOM o plataformas externas.
+            </p>
+          </article>
+
+          <!-- 4. LT&O Core -->
+          <article class="neuro-card module-card anim-fade-up" data-module="LTO" role="listitem" tabindex="0" aria-label="Lumina Treasury and Operations Core">
+            <div class="module-card__header">
+              <h3 class="module-card__name">Lumina Treasury &amp; Ops Core</h3>
+              <span class="module-card__badge" aria-hidden="true">LT&amp;O</span>
+            </div>
+            <div class="module-card__icon" aria-hidden="true">
+              <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                <circle cx="11" cy="11" r="5"   stroke="currentColor" stroke-width="1.6" fill="none"/>
+                <circle cx="21" cy="21" r="5"   stroke="currentColor" stroke-width="1.6" fill="none"/>
+                <line x1="11" y1="4.5"  x2="11" y2="2.5"  stroke="currentColor" stroke-width="2"   stroke-linecap="round"/>
+                <line x1="11" y1="17.5" x2="11" y2="19.5" stroke="currentColor" stroke-width="2"   stroke-linecap="round"/>
+                <line x1="4.5" y1="11"  x2="2.5" y2="11"  stroke="currentColor" stroke-width="2"   stroke-linecap="round"/>
+                <line x1="17.5" y1="11" x2="19.5" y2="11" stroke="currentColor" stroke-width="2"   stroke-linecap="round"/>
+                <line x1="21" y1="14.5" x2="21" y2="12.5" stroke="currentColor" stroke-width="2"   stroke-linecap="round"/>
+                <line x1="21" y1="27.5" x2="21" y2="29.5" stroke="currentColor" stroke-width="2"   stroke-linecap="round"/>
+                <line x1="27.5" y1="21" x2="29.5" y2="21" stroke="currentColor" stroke-width="2"   stroke-linecap="round"/>
+                <line x1="14.5" y1="21" x2="12.5" y2="21" stroke="currentColor" stroke-width="2"   stroke-linecap="round"/>
+                <circle cx="11" cy="11" r="2" fill="currentColor"/>
+                <circle cx="21" cy="21" r="2" fill="currentColor"/>
+              </svg>
+            </div>
+            <p class="module-card__desc">
+              Capturador transaccional central. Límites de trading y clientes, margin calls,
+              colaterales, comisiones, impuestos y consola de control operativo unificada.
+            </p>
+          </article>
+
+          <!-- 5. LMF -->
+          <article class="neuro-card module-card anim-fade-up" data-module="LMF" role="listitem" tabindex="0" aria-label="Lumina Mutual Funds">
+            <div class="module-card__header">
+              <h3 class="module-card__name">Lumina Mutual Funds</h3>
+              <span class="module-card__badge" aria-hidden="true">LMF</span>
+            </div>
+            <div class="module-card__icon" aria-hidden="true">
+              <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                <path d="M16 4 A12 12 0 0 1 28 16 L16 16 Z" stroke="currentColor" stroke-width="1.7" fill="none" stroke-linejoin="round"/>
+                <path d="M28 16 A12 12 0 0 1 10.5 26.4 L16 16 Z" stroke="currentColor" stroke-width="1.7" fill="none" stroke-linejoin="round" opacity="0.7"/>
+                <path d="M10.5 26.4 A12 12 0 0 1 4 16 L16 16 Z" stroke="currentColor" stroke-width="1.7" fill="none" stroke-linejoin="round" opacity="0.5"/>
+                <path d="M4 16 A12 12 0 0 1 16 4 L16 16 Z" stroke="currentColor" stroke-width="1.7" fill="none" stroke-linejoin="round" opacity="0.3"/>
+                <circle cx="16" cy="16" r="3" fill="currentColor"/>
+              </svg>
+            </div>
+            <p class="module-card__desc">
+              Distribución y operación de sociedades de inversión. Compras programadas,
+              aspiradoras, reclasificación accionaria y liquidación con operadoras propias y de terceros.
+            </p>
+          </article>
+
+          <!-- 6. Operations / Back Office -->
+          <article class="neuro-card module-card anim-fade-up" data-module="Operations" role="listitem" tabindex="0" aria-label="Lumina Operations Back Office">
+            <div class="module-card__header">
+              <h3 class="module-card__name">Lumina Operations / Back Office</h3>
+              <span class="module-card__badge" aria-hidden="true">Ops</span>
+            </div>
+            <div class="module-card__icon" aria-hidden="true">
+              <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                <rect x="2"  y="4"  width="28" height="8"   rx="2.5" stroke="currentColor" stroke-width="1.6" fill="none"/>
+                <rect x="2"  y="14" width="28" height="8"   rx="2.5" stroke="currentColor" stroke-width="1.6" fill="none"/>
+                <rect x="2"  y="24" width="28" height="5"   rx="2"   stroke="currentColor" stroke-width="1.5" fill="none" opacity="0.45"/>
+                <circle cx="25" cy="8"    r="1.5" fill="currentColor"/>
+                <circle cx="22" cy="8"    r="1.5" fill="currentColor" opacity="0.5"/>
+                <circle cx="25" cy="18"   r="1.5" fill="currentColor"/>
+                <line x1="6" y1="18" x2="17" y2="18" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <p class="module-card__desc">
+              Confirmaciones, boletas, liquidaciones net/split, eventos corporativos,
+              conciliación de cuentas y motor contable (AE) con reglas configurables.
+            </p>
+          </article>
+
+          <!-- 7. LOR -->
+          <article class="neuro-card module-card anim-fade-up" data-module="LOR" role="listitem" tabindex="0" aria-label="Lumina Order Routing">
+            <div class="module-card__header">
+              <h3 class="module-card__name">Lumina Order Routing</h3>
+              <span class="module-card__badge" aria-hidden="true">LOR</span>
+            </div>
+            <div class="module-card__icon" aria-hidden="true">
+              <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                <circle cx="5"  cy="16" r="3.5" stroke="currentColor" stroke-width="1.6" fill="none"/>
+                <circle cx="27" cy="8"  r="3.5" stroke="currentColor" stroke-width="1.6" fill="none"/>
+                <circle cx="27" cy="24" r="3.5" stroke="currentColor" stroke-width="1.6" fill="none"/>
+                <path d="M8.5 15 Q17 10 23.5 9.2"    stroke="currentColor" stroke-width="1.7" stroke-linecap="round" fill="none"/>
+                <path d="M21.5 7.2 L23.5 9.2 L21.5 11.2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M8.5 17 Q17 22 23.5 22.8"   stroke="currentColor" stroke-width="1.7" stroke-linecap="round" fill="none"/>
+                <path d="M21.5 20.8 L23.5 22.8 L21.5 24.8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <p class="module-card__desc">
+              Ruteo de órdenes al mercado de capitales. E-Trading via FIX, DMA para clientes
+              via BBG, canastas de acciones y P&amp;L intradía.
+            </p>
+          </article>
+
+          <!-- 8. LFE -->
+          <article class="neuro-card module-card anim-fade-up" data-module="LFE" role="listitem" tabindex="0" aria-label="Lumina FIX Engine">
+            <div class="module-card__header">
+              <h3 class="module-card__name">Lumina FIX Engine</h3>
+              <span class="module-card__badge" aria-hidden="true">LFE</span>
+            </div>
+            <div class="module-card__icon" aria-hidden="true">
+              <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                <path d="M3 24 Q7 14 16 14 Q25 14 29 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" fill="none"/>
+                <circle cx="16" cy="14" r="3" fill="currentColor"/>
+                <path d="M7 28 Q11 21 16 21 Q21 21 25 15" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" fill="none" opacity="0.5"/>
+                <path d="M1 19 Q6 9 16 9 Q26 9 31 2"   stroke="currentColor" stroke-width="1.1" stroke-linecap="round" fill="none" opacity="0.3"/>
+              </svg>
+            </div>
+            <p class="module-card__desc">
+              Comunicaciones financieras en tiempo real bajo estándar FIX 4.0–5.0 SP2.
+              Alta escalabilidad, múltiples conexiones y simulador OMS para pruebas.
+            </p>
+          </article>
+
+          <!-- 9. MEC -->
+          <article class="neuro-card module-card anim-fade-up" data-module="MEC" role="listitem" tabindex="0" aria-label="Mexican Exchange Connector">
+            <div class="module-card__header">
+              <h3 class="module-card__name">Mexican Exchange Connector</h3>
+              <span class="module-card__badge" aria-hidden="true">MEC</span>
+            </div>
+            <div class="module-card__icon" aria-hidden="true">
+              <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                <rect x="2"  y="12" width="9" height="8" rx="2" stroke="currentColor" stroke-width="1.6" fill="none"/>
+                <rect x="21" y="12" width="9" height="8" rx="2" stroke="currentColor" stroke-width="1.6" fill="none"/>
+                <line x1="11" y1="16" x2="21" y2="16" stroke="currentColor" stroke-width="2"   stroke-linecap="round"/>
+                <line x1="5"  y1="10" x2="5"  y2="7"  stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+                <line x1="8"  y1="10" x2="8"  y2="7"  stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+                <line x1="24" y1="10" x2="24" y2="7"  stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+                <line x1="27" y1="10" x2="27" y2="7"  stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+                <circle cx="16" cy="23" r="2" fill="currentColor" opacity="0.32"/>
+              </svg>
+            </div>
+            <p class="module-card__desc">
+              Conectividad certificada con la BMV. Protocolos Setrib Tradicional y FIX.
+              Simulador de mercado disponible 24/7 para pruebas fuera del horario bursátil.
+            </p>
+          </article>
+
+          <!-- 10. LSM -->
+          <article class="neuro-card module-card anim-fade-up" data-module="LSM" role="listitem" tabindex="0" aria-label="Lumina Straight to Market">
+            <div class="module-card__header">
+              <h3 class="module-card__name">Lumina Straight to Market</h3>
+              <span class="module-card__badge" aria-hidden="true">LSM</span>
+            </div>
+            <div class="module-card__icon" aria-hidden="true">
+              <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                <path d="M18 3 L8 18 L14.5 18 L13 29 L24 14 L17.5 14 Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" fill="none"/>
+                <line x1="3"   y1="11" x2="6.5" y2="11" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" opacity="0.50"/>
+                <line x1="2"   y1="15" x2="6.5" y2="15" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" opacity="0.35"/>
+                <line x1="3"   y1="19" x2="6.5" y2="19" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" opacity="0.20"/>
+              </svg>
+            </div>
+            <p class="module-card__desc">
+              DMA de alto volumen via FIX. Mínimas latencias, arquitectura colocation-ready,
+              control de riesgo, foliación por canal y validación de rangos regulatorios.
+            </p>
+          </article>
+
+        </div><!-- /modules-arch-grid -->
+      </div><!-- /modules-arch-wrapper -->
+
+    </div><!-- /container -->
+  </section>
+
+
+  <!-- ====================================================================
+       JAVASCRIPT
+       ==================================================================== -->
+  <script>
+    'use strict';
+
+    /* ------------------------------------------------------------------
+       NAVIGATION — Mobile hamburger
+       ------------------------------------------------------------------ */
+    (function initNav() {
+      const btn      = document.getElementById('hamburgerBtn');
+      const panel    = document.getElementById('mobileNav');
+      const backdrop = document.getElementById('navBackdrop');
+      const closeBtn = document.getElementById('mobileClose');
+      const links    = panel.querySelectorAll('a');
+
+      function open() {
+        btn.classList.add('is-open');
+        btn.setAttribute('aria-expanded', 'true');
+        panel.classList.add('is-open');
+        panel.setAttribute('aria-hidden', 'false');
+        backdrop.classList.add('is-open');
+        document.body.style.overflow = 'hidden';
+        closeBtn.focus();
+      }
+
+      function close() {
+        btn.classList.remove('is-open');
+        btn.setAttribute('aria-expanded', 'false');
+        panel.classList.remove('is-open');
+        panel.setAttribute('aria-hidden', 'true');
+        backdrop.classList.remove('is-open');
+        document.body.style.overflow = '';
+      }
+
+      btn.addEventListener('click', () => panel.classList.contains('is-open') ? close() : open());
+      closeBtn.addEventListener('click', close);
+      backdrop.addEventListener('click', close);
+      links.forEach(link => link.addEventListener('click', close));
+
+      document.addEventListener('keydown', e => {
+        if (e.key === 'Escape' && panel.classList.contains('is-open')) {
+          close();
+          btn.focus();
+        }
+      });
+    })();
+
+    /* ------------------------------------------------------------------
+       HERO — Entry animations on load
+       ------------------------------------------------------------------ */
+    document.addEventListener('DOMContentLoaded', () => {
+      requestAnimationFrame(() => {
+        const content = document.getElementById('heroContent');
+        const visual  = document.getElementById('heroVisual');
+        if (content) content.classList.add('is-animated');
+        if (visual)  visual.classList.add('is-animated');
+      });
+    });
+
+    /* ------------------------------------------------------------------
+       SCROLL ANIMATIONS — Intersection Observer
+       ------------------------------------------------------------------ */
+    (function initScrollAnimations() {
+      /* Assign stagger indices to grid children */
+      ['.valor__grid .anim-fade-up', '.modules-arch-grid .anim-fade-up'].forEach(sel => {
+        document.querySelectorAll(sel).forEach((el, i) => { el.dataset.animIdx = i; });
+      });
+
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) return;
+          const delay = parseInt(entry.target.dataset.animIdx || 0) * 90;
+          setTimeout(() => entry.target.classList.add('is-visible'), delay);
+          observer.unobserve(entry.target);
+        });
+      }, { rootMargin: '0px 0px -50px 0px', threshold: 0.08 });
+
+      document.querySelectorAll('.anim-fade-up').forEach(el => observer.observe(el));
+    })();
+
+    /* ------------------------------------------------------------------
+       SVG CONNECTIONS — shared quadratic bezier helper
+       ------------------------------------------------------------------ */
+    function buildPath(x1, y1, x2, y2, curveFactor) {
+      const mx  = (x1 + x2) / 2;
+      const my  = (y1 + y2) / 2;
+      const dx  = x2 - x1;
+      const dy  = y2 - y1;
+      const len = Math.sqrt(dx * dx + dy * dy) || 1;
+      const off = len * (curveFactor || 0.18);
+      const cpx = mx - (dy / len) * off;
+      const cpy = my + (dx / len) * off;
+      return `M ${x1.toFixed(1)} ${y1.toFixed(1)} Q ${cpx.toFixed(1)} ${cpy.toFixed(1)} ${x2.toFixed(1)} ${y2.toFixed(1)}`;
+    }
+
+    /* ------------------------------------------------------------------
+       HERO — Connection lines between module chips
+       ------------------------------------------------------------------ */
+    function drawHeroConnections() {
+      const wrapper = document.getElementById('modulesWrapper');
+      const grid    = document.getElementById('modulesGrid');
+      const svg     = document.getElementById('heroConnSvg');
+      if (!wrapper || !grid || !svg) return;
+
+      const chips = Array.from(grid.querySelectorAll('.module-chip'));
+      const wr    = wrapper.getBoundingClientRect();
+
+      const pos = chips.map(chip => {
+        const r = chip.getBoundingClientRect();
+        return { cx: r.left - wr.left + r.width / 2, cy: r.top - wr.top + r.height / 2 };
+      });
+
+      /* Grid indices:
+         0=LOM   1=LOR   2=LFE
+         3=Trs   4=Ops   5=LMF
+         6=LAM   7=MEC   8=LSM  */
+      const pairs = [
+        [0, 1, 0.14], [1, 2, 0.14],   /* horizontal top   */
+        [3, 4, 0.14], [4, 5, 0.14],   /* horizontal mid   */
+        [0, 3, 0.18], [1, 4, 0.18],   /* vertical         */
+        [1, 7, 0.22],                  /* LOR → MEC        */
+        [2, 8, 0.22],                  /* LFE → LSM        */
+        [4, 7, 0.16],                  /* Ops → MEC        */
+      ];
+
+      svg.innerHTML = '';
+      const w = wrapper.offsetWidth;
+      const h = wrapper.offsetHeight;
+      svg.setAttribute('width', w);
+      svg.setAttribute('height', h);
+      svg.style.width  = w + 'px';
+      svg.style.height = h + 'px';
+      svg.style.position      = 'absolute';
+      svg.style.top           = '0';
+      svg.style.left          = '0';
+      svg.style.pointerEvents = 'none';
+      svg.style.zIndex        = '1';
+      svg.style.overflow      = 'visible';
+
+      const dur = 3.8;
+      pairs.forEach(([i, j, cf], idx) => {
+        const a = pos[i], b = pos[j];
+        if (!a || !b) return;
+
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('d',     buildPath(a.cx, a.cy, b.cx, b.cy, cf));
+        path.setAttribute('class', 'hero-conn-path');
+        path.style.animation = `pathDraw ${dur}s ease-in-out ${((idx * 0.45) % dur).toFixed(2)}s infinite`;
+        svg.appendChild(path);
+      });
+    }
+
+    /* ------------------------------------------------------------------
+       ARCHITECTURE — Connection lines between module cards
+       ------------------------------------------------------------------ */
+    function drawArchConnections() {
+      const grid    = document.getElementById('modulesArchGrid');
+      const svg     = document.getElementById('archConnSvg');
+      const wrapper = grid ? grid.closest('.modules-arch-wrapper') : null;
+      if (!grid || !svg || !wrapper) return;
+
+      const wr  = wrapper.getBoundingClientRect();
+      const map = {};
+
+      grid.querySelectorAll('.module-card').forEach(card => {
+        const r = card.getBoundingClientRect();
+        map[card.dataset.module] = {
+          cx: r.left - wr.left + r.width  / 2,
+          cy: r.top  - wr.top  + r.height / 2,
+        };
+      });
+
+      /* Specified connections */
+      const edges = [
+        ['LOM',  'LOR',        0.20],
+        ['LOR',  'MEC',        0.22],
+        ['LOR',  'LSM',        0.18],
+        ['LFE',  'LOR',        0.20],
+        ['LOM',  'LTO',        0.22],
+        ['LTO',  'Operations', 0.18],
+      ];
+
+      svg.innerHTML = '';
+      svg.setAttribute('width',  wrapper.offsetWidth);
+      svg.setAttribute('height', wrapper.offsetHeight);
+      svg.style.width  = wrapper.offsetWidth  + 'px';
+      svg.style.height = wrapper.offsetHeight + 'px';
+
+      const dur = 5.0;
+      edges.forEach(([from, to, cf], idx) => {
+        const a = map[from], b = map[to];
+        if (!a || !b) return;
+
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('d',     buildPath(a.cx, a.cy, b.cx, b.cy, cf));
+        path.setAttribute('class', 'arch-conn-path');
+        path.style.animation = `archDraw ${dur}s ease-in-out ${((idx * 0.7) % dur).toFixed(2)}s infinite`;
+        svg.appendChild(path);
+      });
+    }
+
+    /* ------------------------------------------------------------------
+       INIT — draw on load; redraw on resize
+       ------------------------------------------------------------------ */
+    (function initConnections() {
+      window.addEventListener('load', () => {
+        drawHeroConnections();
+
+        const archSection = document.getElementById('arquitectura');
+        if (archSection) {
+          const obs = new IntersectionObserver(entries => {
+            if (entries[0].isIntersecting) {
+              setTimeout(drawArchConnections, 250);
+              obs.unobserve(archSection);
+            }
+          }, { threshold: 0.05 });
+          obs.observe(archSection);
+        }
+      });
+
+      let resizeTid;
+      window.addEventListener('resize', () => {
+        clearTimeout(resizeTid);
+        resizeTid = setTimeout(() => { drawHeroConnections(); drawArchConnections(); }, 220);
+      });
+    })();
+  </script>
+
+
+  <!-- ====================================================================
+       CSS ADICIONAL — Prompt 2 (Secciones 4, 5, 6 + Footer)
+       ==================================================================== -->
+  <style>
+
+    /* ======================================================================
+       SECCIÓN 4 — INSTALACIONES TÍPICAS · Tabs
+       ====================================================================== */
+
+    .section-instalaciones {
+      padding: 100px 0;
+      background: var(--bg-base);
+    }
+
+    /* — Tab navigation bar — */
+    .tabs-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 40px;
+    }
+
+    .tab-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      font-family: var(--font-body);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      background: var(--bg-card);
+      border: 1px solid transparent;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all var(--t-smooth);
+      box-shadow:
+         4px  4px 10px var(--shadow-dark),
+        -4px -4px 10px var(--shadow-light);
+    }
+
+    .tab-btn svg {
+      width: 15px; height: 15px;
+      flex-shrink: 0;
+      opacity: 0.6;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      transition: opacity var(--t-base);
+    }
+
+    .tab-btn:hover { color: var(--accent-primary); border-color: var(--border-subtle); }
+    .tab-btn:hover svg { opacity: 1; }
+
+    .tab-btn.is-active {
+      background: var(--accent-primary);
+      color: #fff;
+      border-color: transparent;
+      box-shadow:
+        0 6px 20px rgba(124, 58, 237, 0.38),
+         4px  4px 10px var(--shadow-dark),
+        -4px -4px 10px var(--shadow-light);
+    }
+    .tab-btn.is-active svg { opacity: 1; filter: brightness(10); }
+    .tab-btn:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 3px; }
+
+    /* — Tab panels — */
+    .tabs-content-wrapper { position: relative; }
+
+    .tab-panel { display: none; }
+
+    .tab-panel.is-active {
+      display: block;
+      animation: tabSlideIn 250ms ease forwards;
+    }
+
+    @keyframes tabSlideIn {
+      from { opacity: 0; transform: translateX(14px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    /* — Accordion trigger (hidden on desktop) — */
+    .accordion-trigger { display: none; }
+
+    /* — Tab inner card — */
+    .tab-card {
+      background: var(--bg-card);
+      border-radius: var(--radius-xl);
+      padding: 40px;
+      box-shadow:
+         8px  8px 20px var(--shadow-dark),
+        -8px -8px 20px var(--shadow-light);
+    }
+
+    .tab-card-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      align-items: start;
+    }
+
+    @media (max-width: 900px) {
+      .tab-card { padding: 24px 20px; }
+      .tab-card-grid { grid-template-columns: 1fr; gap: 24px; }
+    }
+
+    /* — Tab left-column components — */
+    .tab-header-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .tab-icon-box {
+      width: 44px; height: 44px;
+      border-radius: var(--radius-sm);
+      background: var(--accent-glow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .tab-icon-box svg {
+      width: 22px; height: 22px;
+      color: var(--accent-primary);
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .tab-name {
+      font-family: var(--font-display);
+      font-size: clamp(17px, 1.8vw, 21px);
+      color: var(--text-primary);
+      line-height: 1.15;
+      margin-bottom: 8px;
+    }
+
+    /* — Product badges — */
+    .badges-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-bottom: 16px;
+    }
+
+    .badge-chip {
+      display: inline-block;
+      font-family: var(--font-body);
+      font-size: 10.5px;
+      font-weight: 600;
+      color: var(--accent-primary);
+      background: rgba(124, 58, 237, 0.09);
+      border: 1px solid var(--border-subtle);
+      border-radius: 20px;
+      padding: 3px 10px;
+      letter-spacing: 0.01em;
+    }
+
+    .badge-chip--all {
+      background: linear-gradient(135deg, rgba(124,58,237,.2), rgba(109,40,217,.18));
+      border-color: rgba(124, 58, 237, 0.32);
+      color: var(--accent-secondary);
+    }
+
+    /* — Tab description — */
+    .tab-desc {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.72;
+      margin-bottom: 20px;
+    }
+
+    /* — Module chips — */
+    .mod-chips-label {
+      font-family: var(--font-mono);
+      font-size: 9.5px;
+      font-weight: 500;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+
+    .mod-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-bottom: 18px;
+    }
+
+    .mod-chip {
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--accent-primary);
+      background: rgba(124, 58, 237, 0.07);
+      border: 1px solid rgba(124, 58, 237, 0.2);
+      border-radius: var(--radius-xs);
+      padding: 4px 9px;
+    }
+
+    /* — Note card — */
+    .tab-note {
+      padding: 13px 16px;
+      border-left: 3px solid var(--accent-primary);
+      background: rgba(124, 58, 237, 0.05);
+      border-radius: 0 var(--radius-xs) var(--radius-xs) 0;
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.65;
+      font-style: italic;
+    }
+
+    /* ======================================================================
+       FLOW DIAGRAMS
+       ====================================================================== */
+
+    .flow-diagram {
+      background: rgba(124, 58, 237, 0.04);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 18px;
+      overflow-x: auto;
+    }
+
+    .flow-label {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent-primary);
+      margin-bottom: 14px;
+    }
+
+    .flow-row {
+      display: flex;
+      align-items: center;
+      flex-wrap: nowrap;
+      gap: 4px;
+    }
+
+    .flow-col {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 3px;
+    }
+
+    .flow-col--center { align-items: center; }
+
+    .flow-split {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      margin-top: 2px;
+    }
+
+    /* Flow nodes */
+    .flow-node {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--text-primary);
+      background: var(--bg-card);
+      border: 1px solid rgba(124, 58, 237, 0.2);
+      border-radius: 5px;
+      padding: 4px 8px;
+      white-space: nowrap;
+      box-shadow:
+         2px  2px 4px var(--shadow-dark),
+        -2px -2px 4px var(--shadow-light);
+      line-height: 1.4;
+    }
+
+    .flow-node--accent {
+      background: linear-gradient(135deg, rgba(124,58,237,.14), rgba(109,40,217,.08));
+      border-color: rgba(124, 58, 237, 0.38);
+      color: var(--accent-primary);
+      font-weight: 600;
+    }
+
+    .flow-node--external {
+      background: rgba(15, 23, 42, 0.05);
+      border-color: rgba(15, 23, 42, 0.16);
+      color: var(--text-secondary);
+    }
+
+    .flow-node--tall {
+      padding: 6px 10px;
+      text-align: center;
+      line-height: 1.5;
+    }
+
+    .flow-node--wide { min-width: 100%; text-align: center; }
+
+    .flow-node-sub {
+      display: block;
+      font-family: var(--font-body);
+      font-size: 8.5px;
+      color: var(--text-secondary);
+      font-weight: 400;
+      font-style: normal;
+      margin-top: 3px;
+      line-height: 1.4;
+    }
+
+    .flow-arrow {
+      font-size: 13px;
+      color: var(--accent-primary);
+      opacity: 0.65;
+      flex-shrink: 0;
+      font-style: normal;
+      line-height: 1;
+    }
+
+    .flow-down {
+      font-size: 14px;
+      color: var(--accent-primary);
+      opacity: 0.55;
+      line-height: 1;
+      display: block;
+    }
+
+    /* ======================================================================
+       MOBILE — Accordion (< 768 px)
+       ====================================================================== */
+
+    @media (max-width: 767px) {
+
+      .tabs-nav { display: none !important; }
+
+      /* Stack all panels as accordion items */
+      .tabs-content-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .tab-panel {
+        display: block !important;
+        animation: none !important;
+        border-radius: var(--radius-md);
+        overflow: hidden;
+      }
+
+      .accordion-trigger {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        padding: 14px 18px;
+        background: var(--bg-card);
+        border: none;
+        border-radius: var(--radius-md);
+        font-family: var(--font-body);
+        font-size: 13.5px;
+        font-weight: 500;
+        color: var(--text-primary);
+        cursor: pointer;
+        text-align: left;
+        transition: color var(--t-base), border-radius var(--t-smooth);
+        box-shadow:
+           4px  4px 10px var(--shadow-dark),
+          -4px -4px 10px var(--shadow-light);
+      }
+
+      .accordion-trigger.is-open {
+        color: var(--accent-primary);
+        border-radius: var(--radius-md) var(--radius-md) 0 0;
+      }
+
+      .acc-trigger-inner {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+      }
+
+      .acc-icon {
+        width: 14px; height: 14px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        opacity: 0.7;
+      }
+
+      .acc-chevron {
+        width: 16px; height: 16px;
+        fill: none;
+        stroke: var(--text-secondary);
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        flex-shrink: 0;
+        transition: transform var(--t-smooth);
+      }
+
+      .accordion-trigger.is-open .acc-chevron { transform: rotate(180deg); }
+
+      .accordion-body {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .accordion-body.is-open { max-height: 4000px; }
+
+      .tab-card {
+        border-radius: 0 0 var(--radius-md) var(--radius-md);
+        box-shadow:
+           4px  8px 16px var(--shadow-dark),
+          -4px  0   8px  var(--shadow-light);
+      }
+    }
+
+    /* Desktop: accordion body always visible */
+    @media (min-width: 768px) {
+      .accordion-body {
+        max-height: none !important;
+        overflow: visible;
+      }
+    }
+
+    /* ======================================================================
+       SECCIÓN 5 — TECNOLOGÍA & INTEGRACIONES
+       ====================================================================== */
+
+    .section-tecnologia {
+      padding: 100px 0;
+      background: #0f172a;
+    }
+
+    .section-title--white  { color: #ffffff; }
+    .section-subtitle--slate { color: #94a3b8; }
+
+    /* 3-col tech cards */
+    .tech-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-bottom: 48px;
+    }
+
+    @media (max-width: 900px) {
+      .tech-grid { grid-template-columns: 1fr; gap: 14px; }
+    }
+
+    .tech-card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      transition: background var(--t-smooth), border-color var(--t-smooth);
+    }
+
+    .tech-card:hover {
+      background: rgba(255, 255, 255, 0.06);
+      border-color: rgba(124, 58, 237, 0.35);
+    }
+
+    .tech-card-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    }
+
+    .tech-card-icon {
+      width: 38px; height: 38px;
+      border-radius: var(--radius-xs);
+      background: rgba(124, 58, 237, 0.22);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .tech-card-icon svg {
+      width: 18px; height: 18px;
+      color: #c4b5fd;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .tech-card-title {
+      font-family: var(--font-body);
+      font-size: 14.5px;
+      font-weight: 600;
+      color: #ffffff;
+      letter-spacing: -0.01em;
+    }
+
+    .tech-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .tech-list li {
+      font-family: var(--font-body);
+      font-size: 13px;
+      color: #cbd5e1;
+      line-height: 1.5;
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+    }
+
+    .tech-list li::before {
+      content: '';
+      display: block;
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: #a78bfa;
+      flex-shrink: 0;
+      margin-top: 5px;
+    }
+
+    /* Integration pills bar */
+    .integration-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .integration-pill {
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      font-weight: 500;
+      color: #cbd5e1;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 20px;
+      padding: 6px 18px;
+      letter-spacing: 0.05em;
+      transition: all var(--t-base);
+    }
+
+    .integration-pill:hover {
+      background: rgba(124, 58, 237, 0.22);
+      border-color: rgba(124, 58, 237, 0.45);
+      color: #c4b5fd;
+    }
+
+    /* ======================================================================
+       SECCIÓN 6 — CTA FINAL
+       ====================================================================== */
+
+    .section-cta {
+      background: linear-gradient(135deg, #6d28d9 0%, #4c1d95 100%);
+      padding: 80px 0 0;
+      text-align: center;
+    }
+
+    .cta-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: #ddd6fe;
+      margin-bottom: 16px;
+    }
+
+    .cta-title {
+      font-family: var(--font-display);
+      font-size: clamp(26px, 3.8vw, 42px);
+      line-height: 1.1;
+      color: #ffffff;
+      margin-bottom: 20px;
+      letter-spacing: -0.02em;
+    }
+
+    .cta-desc {
+      font-size: 16.5px;
+      color: #ede9fe;
+      max-width: 560px;
+      margin: 0 auto 36px;
+      line-height: 1.7;
+    }
+
+    .cta-button {
+      display: inline-block;
+      font-family: var(--font-body);
+      font-size: 15px;
+      font-weight: 600;
+      color: #6d28d9;
+      background: #ffffff;
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 14px 38px;
+      cursor: pointer;
+      transition: box-shadow var(--t-smooth), transform var(--t-smooth);
+      text-decoration: none;
+      letter-spacing: -0.01em;
+    }
+
+    .cta-button:hover {
+      box-shadow: 0 8px 32px rgba(255, 255, 255, 0.28);
+      transform: scale(1.025);
+    }
+
+    .cta-hr {
+      border: none;
+      border-top: 1px solid rgba(255, 255, 255, 0.15);
+      margin: 48px 0 0;
+    }
+
+    /* ======================================================================
+       SITE FOOTER
+       ====================================================================== */
+
+    .site-footer {
+      background: linear-gradient(135deg, #6d28d9 0%, #4c1d95 100%);
+      padding: 36px 0;
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 767px) {
+      .footer-inner {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+    }
+
+    .footer-logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .footer-logo-mark { width: 22px; height: 22px; }
+
+    .footer-logo-text {
+      font-family: var(--font-body);
+      font-weight: 300;
+      font-size: 19px;
+      letter-spacing: 0.18em;
+      color: #ffffff;
+      line-height: 1;
+    }
+
+    .footer-tagline {
+      font-family: var(--font-body);
+      font-size: 12px;
+      color: #ddd6fe;
+      margin-top: 7px;
+      letter-spacing: 0.02em;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 28px;
+      flex-wrap: wrap;
+      justify-content: center;
+      list-style: none;
+    }
+
+    .footer-links a {
+      font-family: var(--font-body);
+      font-size: 13px;
+      color: #ddd6fe;
+      transition: color var(--t-base);
+    }
+
+    .footer-links a:hover { color: #ffffff; }
+
+    .footer-copy {
+      font-family: var(--font-body);
+      font-size: 11.5px;
+      color: #94a3b8;
+    }
+
+  </style>
+
+
+  <!-- ====================================================================
+       SECCIÓN 4 — INSTALACIONES TÍPICAS
+       ==================================================================== -->
+  <section id="instalaciones" class="section-instalaciones">
+    <div class="container">
+
+      <!-- Section header -->
+      <header class="section-header anim-fade-up">
+        <p class="section-eyebrow">Instalaciones Típicas</p>
+        <h2 class="section-title">Configuraciones probadas en producción</h2>
+        <p class="section-subtitle">
+          Lumina se adapta a distintos modelos de negocio.
+          Estas son las instalaciones más frecuentes en instituciones de América Latina.
+        </p>
+      </header>
+
+      <!-- ——— TAB NAV (desktop) ——— -->
+      <nav class="tabs-nav anim-fade-up" role="tablist" aria-label="Tipos de instalación">
+
+        <button class="tab-btn neuro-btn is-active" role="tab" data-tab="0" aria-selected="true">
+          <!-- Icon: building -->
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18z"/>
+            <path d="M6 12H4a2 2 0 0 0-2 2v8h20v-8a2 2 0 0 0-2-2h-2"/>
+            <path d="M10 22v-5h4v5"/>
+          </svg>
+          Casa de Bolsa F2B
+        </button>
+
+        <button class="tab-btn neuro-btn" role="tab" data-tab="1" aria-selected="false">
+          <!-- Icon: briefcase -->
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="2" y="7" width="20" height="14" rx="2"/>
+            <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/>
+            <line x1="12" y1="12" x2="12" y2="16"/>
+            <line x1="10" y1="14" x2="14" y2="14"/>
+          </svg>
+          Banca Privada
+        </button>
+
+        <button class="tab-btn neuro-btn" role="tab" data-tab="2" aria-selected="false">
+          <!-- Icon: candlestick chart -->
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M3 3v18h18"/>
+            <path d="M7 16l4-5 4 3 4-8"/>
+          </svg>
+          Front de Capitales
+        </button>
+
+        <button class="tab-btn neuro-btn" role="tab" data-tab="3" aria-selected="false">
+          <!-- Icon: delta / derivative symbol -->
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="5"  r="2"/>
+            <circle cx="5"  cy="19" r="2"/>
+            <circle cx="19" cy="19" r="2"/>
+            <line x1="12" y1="7"  x2="5.5"  y2="17"/>
+            <line x1="12" y1="7"  x2="18.5" y2="17"/>
+            <line x1="7"  y1="19" x2="17"   y2="19"/>
+          </svg>
+          Banco con Derivados
+        </button>
+
+        <button class="tab-btn neuro-btn" role="tab" data-tab="4" aria-selected="false">
+          <!-- Icon: gauge / dashboard -->
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 2a10 10 0 0 1 10 10H2A10 10 0 0 1 12 2z"/>
+            <path d="M12 12l-4.5-3"/>
+            <circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/>
+          </svg>
+          Front-Office PNL
+        </button>
+
+      </nav>
+
+      <!-- ——— TAB CONTENT PANELS ——— -->
+      <div class="tabs-content-wrapper">
+
+        <!-- ============================================================
+             TAB 0 — Casa de Bolsa F2B (default activo)
+             ============================================================ -->
+        <div class="tab-panel is-active" data-panel="0" role="tabpanel">
+
+          <!-- Mobile accordion trigger -->
+          <button class="accordion-trigger" aria-expanded="false">
+            <span class="acc-trigger-inner">
+              <svg class="acc-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18z"/>
+                <path d="M6 12H4a2 2 0 0 0-2 2v8h20v-8a2 2 0 0 0-2-2h-2"/>
+                <path d="M10 22v-5h4v5"/>
+              </svg>
+              Casa de Bolsa F2B
+            </span>
+            <svg class="acc-chevron" viewBox="0 0 24 24" aria-hidden="true">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </button>
+
+          <div class="accordion-body">
+            <div class="tab-card">
+              <div class="tab-card-grid">
+
+                <!-- Left: description -->
+                <div>
+                  <div class="tab-header-row">
+                    <div class="tab-icon-box">
+                      <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18z"/>
+                        <path d="M6 12H4a2 2 0 0 0-2 2v8h20v-8a2 2 0 0 0-2-2h-2"/>
+                        <path d="M10 22v-5h4v5"/>
+                      </svg>
+                    </div>
+                    <div>
+                      <h3 class="tab-name">Casa de Bolsa — Front-to-Back</h3>
+                      <div class="badges-row">
+                        <span class="badge-chip">Bonos &amp; Repos</span>
+                        <span class="badge-chip">Capitales</span>
+                        <span class="badge-chip">Fondos de Inversión</span>
+                      </div>
+                    </div>
+                  </div>
+                  <p class="tab-desc">
+                    Solución Front-to-Back completa para una Casa de Bolsa conectada a la BMV.
+                    Cubre desde la captura de órdenes hasta la contabilización y generación de
+                    estados de cuenta para clientes institucionales y retail.
+                  </p>
+                  <p class="mod-chips-label">Módulos involucrados</p>
+                  <div class="mod-chips">
+                    <span class="mod-chip">LOM</span>
+                    <span class="mod-chip">LOR</span>
+                    <span class="mod-chip">Lumina Treasury</span>
+                    <span class="mod-chip">LMF</span>
+                    <span class="mod-chip">LT&amp;O Core</span>
+                    <span class="mod-chip">Lumina Operations</span>
+                    <span class="mod-chip">LFE</span>
+                    <span class="mod-chip">MEC</span>
+                    <span class="mod-chip">LSM</span>
+                  </div>
+                  <div class="tab-note">
+                    Workflow completamente configurable: el mismo stack se adapta a operatoria
+                    100% propia, con clientes o en modelo de intermediación pura.
+                  </div>
+                </div>
+
+                <!-- Right: flow diagram -->
+                <div>
+                  <div class="flow-diagram">
+                    <p class="flow-label">Arquitectura Front-to-Back — BMV</p>
+
+                    <!-- Main chain: LOM → LOR → MEC/LSM → BMV -->
+                    <div class="flow-row" style="margin-bottom:2px;">
+                      <div class="flow-node flow-node--accent">LOM</div>
+                      <span class="flow-arrow">→</span>
+                      <div class="flow-node flow-node--accent">LOR</div>
+                      <span class="flow-arrow">→</span>
+                      <div class="flow-node">MEC / LSM</div>
+                      <span class="flow-arrow">→</span>
+                      <div class="flow-node flow-node--external">BMV</div>
+                    </div>
+
+                    <!-- Two branches below LOM and LOR -->
+                    <div class="flow-split">
+
+                      <!-- Branch A (from LOM): ↓ LFE -->
+                      <div class="flow-col" style="padding-left:14px;">
+                        <span class="flow-down">↓</span>
+                        <div class="flow-node">LFE</div>
+                      </div>
+
+                      <!-- Branch B (from LOR): Treasury → LT&O → Operations → Motor AE -->
+                      <div class="flow-col" style="padding-left:8px;">
+                        <span class="flow-down">↓</span>
+                        <div class="flow-node flow-node--accent">Lumina Treasury</div>
+                        <span class="flow-down">↓</span>
+                        <div class="flow-row">
+                          <div class="flow-node flow-node--accent">LT&amp;O Core</div>
+                          <span class="flow-arrow">→</span>
+                          <div class="flow-node">Lumina Operations</div>
+                        </div>
+                        <span class="flow-down" style="align-self:flex-end; padding-right:18px;">↓</span>
+                        <div class="flow-node" style="align-self:flex-end;">Motor Contable AE</div>
+                      </div>
+
+                    </div>
+                  </div><!-- /.flow-diagram -->
+                </div>
+
+              </div><!-- /.tab-card-grid -->
+            </div><!-- /.tab-card -->
+          </div><!-- /.accordion-body -->
+        </div><!-- /.tab-panel[0] -->
+
+
+        <!-- ============================================================
+             TAB 1 — Banca Privada / Promoción
+             ============================================================ -->
+        <div class="tab-panel" data-panel="1" role="tabpanel">
+
+          <button class="accordion-trigger" aria-expanded="false">
+            <span class="acc-trigger-inner">
+              <svg class="acc-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="2" y="7" width="20" height="14" rx="2"/>
+                <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/>
+              </svg>
+              Banca Privada / Promoción
+            </span>
+            <svg class="acc-chevron" viewBox="0 0 24 24" aria-hidden="true">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </button>
+
+          <div class="accordion-body">
+            <div class="tab-card">
+              <div class="tab-card-grid">
+
+                <div>
+                  <div class="tab-header-row">
+                    <div class="tab-icon-box">
+                      <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <rect x="2" y="7" width="20" height="14" rx="2"/>
+                        <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/>
+                        <line x1="12" y1="12" x2="12" y2="16"/>
+                        <line x1="10" y1="14" x2="14" y2="14"/>
+                      </svg>
+                    </div>
+                    <div>
+                      <h3 class="tab-name">Banca Privada / Promoción</h3>
+                      <div class="badges-row">
+                        <span class="badge-chip">Bonos &amp; Repos</span>
+                        <span class="badge-chip">Capitales</span>
+                        <span class="badge-chip">FX</span>
+                        <span class="badge-chip">Fondos</span>
+                        <span class="badge-chip">CDs &amp; Loans</span>
+                      </div>
+                    </div>
+                  </div>
+                  <p class="tab-desc">
+                    Plataforma de promoción para Banca Privada que centraliza la operatoria
+                    de Mercado de Dinero, Capitales, FX, Sociedades de Inversión y Préstamos.
+                    Se conecta via FIX Engine a una instalación externa de Casa de Bolsa para
+                    la ejecución en capitales, y se integra al back-office propietario de la
+                    institución para la liquidación de todos los productos.
+                  </p>
+                  <p class="mod-chips-label">Módulos involucrados</p>
+                  <div class="mod-chips">
+                    <span class="mod-chip">LOM</span>
+                    <span class="mod-chip">LMF</span>
+                    <span class="mod-chip">LFE</span>
+                  </div>
+                  <div class="tab-note">
+                    Diseñado para bancos que intermedian capitales a través de una casa de bolsa
+                    relacionada, manteniendo la gestión comercial centralizada en Lumina.
+                  </div>
+                </div>
+
+                <div>
+                  <div class="flow-diagram">
+                    <p class="flow-label">Flujo Promoción — Banco Privado</p>
+                    <div class="flow-col" style="gap:3px;">
+                      <!-- Row 1: LOM → LFE → Casa Bolsa Externa -->
+                      <div class="flow-row">
+                        <div class="flow-node flow-node--accent">LOM (Promoción)</div>
+                        <span class="flow-arrow">→</span>
+                        <div class="flow-node">LFE</div>
+                        <span class="flow-arrow">→</span>
+                        <div class="flow-node flow-node--external">Casa de Bolsa<br>Externa</div>
+                      </div>
+                      <!-- ↓ from LOM -->
+                      <span class="flow-down" style="padding-left:46px;">↓</span>
+                      <!-- LMF (Fondos) -->
+                      <div style="padding-left:36px;">
+                        <div class="flow-node flow-node--accent">LMF (Fondos)</div>
+                      </div>
+                      <!-- ↓ from LMF -->
+                      <span class="flow-down" style="padding-left:46px;">↓</span>
+                      <!-- Interface → Back-Office -->
+                      <div style="padding-left:36px;">
+                        <div class="flow-row">
+                          <div class="flow-node">Interface</div>
+                          <span class="flow-arrow">→</span>
+                          <div class="flow-node flow-node--external">Back-Office<br>del Banco</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div><!-- /.tab-panel[1] -->
+
+
+        <!-- ============================================================
+             TAB 2 — Front de Capitales
+             ============================================================ -->
+        <div class="tab-panel" data-panel="2" role="tabpanel">
+
+          <button class="accordion-trigger" aria-expanded="false">
+            <span class="acc-trigger-inner">
+              <svg class="acc-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M3 3v18h18"/>
+                <path d="M7 16l4-5 4 3 4-8"/>
+              </svg>
+              Front de Capitales
+            </span>
+            <svg class="acc-chevron" viewBox="0 0 24 24" aria-hidden="true">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </button>
+
+          <div class="accordion-body">
+            <div class="tab-card">
+              <div class="tab-card-grid">
+
+                <div>
+                  <div class="tab-header-row">
+                    <div class="tab-icon-box">
+                      <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M3 3v18h18"/>
+                        <path d="M7 16l4-5 4 3 4-8"/>
+                      </svg>
+                    </div>
+                    <div>
+                      <h3 class="tab-name">Front de Capitales</h3>
+                      <div class="badges-row">
+                        <span class="badge-chip">Capitales</span>
+                      </div>
+                    </div>
+                  </div>
+                  <p class="tab-desc">
+                    Solución de front-office exclusiva para la Mesa Institucional de Capitales
+                    de una Casa de Bolsa. Permite operar directamente en la BMV, gestionar
+                    posturas en tiempo real y ofrecer DMA a clientes institucionales.
+                    Se entrega al back-office externo de la institución para la liquidación.
+                  </p>
+                  <p class="mod-chips-label">Módulos involucrados</p>
+                  <div class="mod-chips">
+                    <span class="mod-chip">LOR</span>
+                    <span class="mod-chip">LFE</span>
+                    <span class="mod-chip">MEC</span>
+                    <span class="mod-chip">LSM</span>
+                    <span class="mod-chip">Lumina Trading Station</span>
+                  </div>
+                  <div class="tab-note">
+                    Arquitectura mínima y de alto rendimiento. Puede instalarse en
+                    colocation con infraestructura reducida para minimizar latencias.
+                  </div>
+                </div>
+
+                <div>
+                  <div class="flow-diagram">
+                    <p class="flow-label">Flujo Front de Capitales — DMA</p>
+                    <div class="flow-col" style="gap:3px;">
+                      <!-- Main chain: LOR ↔ LFE ↔ MEC ↔ BMV -->
+                      <div class="flow-row">
+                        <div class="flow-node flow-node--accent">LOR</div>
+                        <span class="flow-arrow">↔</span>
+                        <div class="flow-node">LFE</div>
+                        <span class="flow-arrow">↔</span>
+                        <div class="flow-node">MEC</div>
+                        <span class="flow-arrow">↔</span>
+                        <div class="flow-node flow-node--external">BMV</div>
+                      </div>
+                      <!-- ↓ -->
+                      <span class="flow-down">↓</span>
+                      <!-- LSM → Clientes DMA -->
+                      <div class="flow-row">
+                        <div class="flow-node flow-node--accent">LSM</div>
+                        <span class="flow-arrow">→</span>
+                        <div class="flow-node flow-node--external">Clientes DMA</div>
+                      </div>
+                      <!-- ↓ -->
+                      <span class="flow-down">↓</span>
+                      <!-- LTS → Posturas propias -->
+                      <div class="flow-row">
+                        <div class="flow-node flow-node--accent">Lumina Trading Station</div>
+                        <span class="flow-arrow">→</span>
+                        <div class="flow-node">Posturas propias</div>
+                      </div>
+                      <!-- ↓ -->
+                      <span class="flow-down">↓</span>
+                      <div class="flow-node flow-node--external">Back-Office Externo</div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div><!-- /.tab-panel[2] -->
+
+
+        <!-- ============================================================
+             TAB 3 — Banco con Derivados F2B
+             ============================================================ -->
+        <div class="tab-panel" data-panel="3" role="tabpanel">
+
+          <button class="accordion-trigger" aria-expanded="false">
+            <span class="acc-trigger-inner">
+              <svg class="acc-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="12" cy="5"  r="2"/>
+                <circle cx="5"  cy="19" r="2"/>
+                <circle cx="19" cy="19" r="2"/>
+                <line x1="12" y1="7"  x2="5.5"  y2="17"/>
+                <line x1="12" y1="7"  x2="18.5" y2="17"/>
+                <line x1="7"  y1="19" x2="17"   y2="19"/>
+              </svg>
+              Banco con Derivados F2B
+            </span>
+            <svg class="acc-chevron" viewBox="0 0 24 24" aria-hidden="true">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </button>
+
+          <div class="accordion-body">
+            <div class="tab-card">
+              <div class="tab-card-grid">
+
+                <div>
+                  <div class="tab-header-row">
+                    <div class="tab-icon-box">
+                      <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <circle cx="12" cy="5"  r="2"/>
+                        <circle cx="5"  cy="19" r="2"/>
+                        <circle cx="19" cy="19" r="2"/>
+                        <line x1="12" y1="7"  x2="5.5"  y2="17"/>
+                        <line x1="12" y1="7"  x2="18.5" y2="17"/>
+                        <line x1="7"  y1="19" x2="17"   y2="19"/>
+                      </svg>
+                    </div>
+                    <div>
+                      <h3 class="tab-name">Banco con Derivados — F2B</h3>
+                      <div class="badges-row">
+                        <span class="badge-chip">Bonos &amp; Repos</span>
+                        <span class="badge-chip">FX</span>
+                        <span class="badge-chip">Futuros &amp; Opciones</span>
+                        <span class="badge-chip">Derivados OTC</span>
+                      </div>
+                    </div>
+                  </div>
+                  <p class="tab-desc">
+                    Solución Front-to-Back para la mesa de Dinero y Derivados de un Banco
+                    que opera posiciones propias y con clientes institucionales. Cubre
+                    instrumentos plain vanilla y derivados complejos, con gestión de
+                    colaterales, margin calls y valuación de posiciones.
+                  </p>
+                  <p class="mod-chips-label">Módulos involucrados</p>
+                  <div class="mod-chips">
+                    <span class="mod-chip">Lumina Treasury</span>
+                    <span class="mod-chip">LT&amp;O Core</span>
+                    <span class="mod-chip">Lumina Operations</span>
+                    <span class="mod-chip">Motor AE</span>
+                  </div>
+                  <div class="tab-note">
+                    El módulo de Exposición calcula inventarios, colaterales y proyecciones
+                    de liquidez de forma integrada con el motor de cálculo financiero propio.
+                  </div>
+                </div>
+
+                <div>
+                  <div class="flow-diagram">
+                    <p class="flow-label">Flujo F2B — Mesa de Dinero &amp; Derivados</p>
+                    <div class="flow-col flow-col--center" style="gap:3px; width:100%;">
+
+                      <div class="flow-node flow-node--accent flow-node--tall" style="width:100%; max-width:240px;">
+                        Lumina Treasury
+                        <span class="flow-node-sub">Plain Vanilla · Derivados Complejos<br>Portafolios · PnL · Risk · VaR</span>
+                      </div>
+
+                      <span class="flow-down">↓</span>
+
+                      <div class="flow-node flow-node--accent flow-node--tall" style="width:100%; max-width:240px;">
+                        LT&amp;O Core
+                        <span class="flow-node-sub">Límites · Margin Calls · Colaterales · Comisiones</span>
+                      </div>
+
+                      <span class="flow-down">↓</span>
+
+                      <div class="flow-node flow-node--tall" style="width:100%; max-width:240px;">
+                        Lumina Operations / Back Office
+                        <span class="flow-node-sub">Confirmaciones · Liquidaciones · Eventos Corporativos</span>
+                      </div>
+
+                      <span class="flow-down">↓</span>
+
+                      <div class="flow-node flow-node--accent" style="width:100%; max-width:240px; text-align:center;">
+                        Motor Contable AE
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div><!-- /.tab-panel[3] -->
+
+
+        <!-- ============================================================
+             TAB 4 — Front-Office PNL + Riesgos
+             ============================================================ -->
+        <div class="tab-panel" data-panel="4" role="tabpanel">
+
+          <button class="accordion-trigger" aria-expanded="false">
+            <span class="acc-trigger-inner">
+              <svg class="acc-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 2a10 10 0 0 1 10 10H2A10 10 0 0 1 12 2z"/>
+                <path d="M12 12l-4.5-3"/>
+                <circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/>
+              </svg>
+              Front-Office PNL + Riesgos
+            </span>
+            <svg class="acc-chevron" viewBox="0 0 24 24" aria-hidden="true">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </button>
+
+          <div class="accordion-body">
+            <div class="tab-card">
+              <div class="tab-card-grid">
+
+                <div>
+                  <div class="tab-header-row">
+                    <div class="tab-icon-box">
+                      <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M12 2a10 10 0 0 1 10 10H2A10 10 0 0 1 12 2z"/>
+                        <path d="M12 12l-4.5-3"/>
+                        <circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/>
+                      </svg>
+                    </div>
+                    <div>
+                      <h3 class="tab-name">Front-Office PNL + Riesgos</h3>
+                      <div class="badges-row">
+                        <span class="badge-chip badge-chip--all">Todos los productos</span>
+                      </div>
+                    </div>
+                  </div>
+                  <p class="tab-desc">
+                    Capa de Front-Office y Riesgos que consolida PnL, VaR y XVA
+                    de múltiples negocios de una Casa de Bolsa, integrándose en línea
+                    con sistemas propietarios de trading de Mercado de Dinero,
+                    Capitales y Derivados. No requiere migrar los sistemas de ejecución existentes.
+                  </p>
+                  <p class="mod-chips-label">Módulos involucrados</p>
+                  <div class="mod-chips">
+                    <span class="mod-chip">Lumina Treasury</span>
+                    <span class="mod-chip">LT&amp;O Core</span>
+                  </div>
+                  <div class="tab-note">
+                    Ideal como primer paso de adopción: agrega inteligencia de riesgo y PnL
+                    sobre la infraestructura de trading existente, sin disrupción operativa.
+                  </div>
+                </div>
+
+                <div>
+                  <div class="flow-diagram">
+                    <p class="flow-label">Consolidación PnL · VaR · XVA · Riesgo</p>
+                    <!-- External systems → LT&O Core → Treasury -->
+                    <div class="flow-row" style="align-items:stretch; gap:8px;">
+
+                      <!-- Left: three external trading systems -->
+                      <div class="flow-col" style="gap:6px; flex:1; min-width:100px;">
+                        <div class="flow-node flow-node--external" style="text-align:center;">
+                          Sist. Trading<br>M. Dinero
+                        </div>
+                        <div class="flow-node flow-node--external" style="text-align:center;">
+                          Sist. Trading<br>Capitales / FX
+                        </div>
+                        <div class="flow-node flow-node--external" style="text-align:center;">
+                          Sist. Trading<br>Derivados
+                        </div>
+                      </div>
+
+                      <!-- Center: big arrow -->
+                      <div style="display:flex; align-items:center; padding:0 2px;">
+                        <span class="flow-arrow" style="font-size:18px;">→</span>
+                      </div>
+
+                      <!-- Right: LT&O Core → Treasury -->
+                      <div class="flow-col flow-col--center" style="gap:4px;">
+                        <div class="flow-node flow-node--accent flow-node--tall" style="min-width:100px; text-align:center;">
+                          LT&amp;O Core
+                          <span class="flow-node-sub">Consolidación</span>
+                        </div>
+                        <span class="flow-down">↓</span>
+                        <div class="flow-node flow-node--accent flow-node--tall" style="min-width:100px; text-align:center;">
+                          Lumina Treasury
+                          <span class="flow-node-sub">PnL · VaR · XVA</span>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div><!-- /.tab-panel[4] -->
+
+      </div><!-- /.tabs-content-wrapper -->
+    </div><!-- /.container -->
+  </section>
+
+
+  <!-- ====================================================================
+       SECCIÓN 5 — TECNOLOGÍA & INTEGRACIONES
+       ==================================================================== -->
+  <section id="tecnologia" class="section-tecnologia">
+    <div class="container">
+
+      <!-- Section header -->
+      <header class="section-header anim-fade-up">
+        <p class="section-eyebrow" style="color:#a78bfa;">Tecnología</p>
+        <h2 class="section-title section-title--white">
+          Tecnología diseñada para entornos de alta exigencia
+        </h2>
+        <p class="section-subtitle section-subtitle--slate">
+          Protocolos estándar de la industria. Arquitectura escalable.
+          Integración con los sistemas que ya operan en tu institución.
+        </p>
+      </header>
+
+      <!-- 3-column glass cards -->
+      <div class="tech-grid anim-fade-up">
+
+        <!-- Card 1 — Protocolos Estándar -->
+        <div class="tech-card">
+          <div class="tech-card-header">
+            <div class="tech-card-icon">
+              <!-- Network / protocol icon -->
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="12" cy="12" r="3"/>
+                <path d="M12 2v3M12 19v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12
+                         M2 12h3M19 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"/>
+              </svg>
+            </div>
+            <h3 class="tech-card-title">Protocolos Estándar</h3>
+          </div>
+          <ul class="tech-list">
+            <li>FIX 4.0 / 4.2 / 4.4 / 5.0 SP2</li>
+            <li>REST API / Webservices</li>
+            <li>Setrib Tradicional (BMV)</li>
+            <li>FTP / SFTP para cargas batch</li>
+            <li>Interfaces punto a punto</li>
+          </ul>
+        </div>
+
+        <!-- Card 2 — Capacidades Técnicas -->
+        <div class="tech-card">
+          <div class="tech-card-header">
+            <div class="tech-card-icon">
+              <!-- Lightning / performance icon -->
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+              </svg>
+            </div>
+            <h3 class="tech-card-title">Capacidades Técnicas</h3>
+          </div>
+          <ul class="tech-list">
+            <li>Procesamiento en tiempo real de alto volumen</li>
+            <li>Arquitectura multi-conexión y multi-motor</li>
+            <li>Escalabilidad lineal (colocation-ready)</li>
+            <li>Mínimas latencias para DMA</li>
+            <li>Consola de administración centralizada</li>
+            <li>Simuladores de mercado integrados</li>
+          </ul>
+        </div>
+
+        <!-- Card 3 — Ecosistema de Integración -->
+        <div class="tech-card">
+          <div class="tech-card-header">
+            <div class="tech-card-icon">
+              <!-- Puzzle / connectors icon -->
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M4 4h4v4H4zM16 4h4v4h-4zM4 16h4v4H4zM16 16h4v4h-4z"/>
+                <path d="M8 6h8M6 8v8M18 8v8M8 18h8"/>
+              </svg>
+            </div>
+            <h3 class="tech-card-title">Ecosistema de Integración</h3>
+          </div>
+          <ul class="tech-list">
+            <li>Bolsa Mexicana de Valores (BMV)</li>
+            <li>Bloomberg (BBG) via FIX</li>
+            <li>Sistemas de pago electrónico</li>
+            <li>Plataformas de factura electrónica</li>
+            <li>OMS / Back-offices propietarios</li>
+            <li>Plataformas externas (Excel / FTP export)</li>
+          </ul>
+        </div>
+
+      </div><!-- /.tech-grid -->
+
+      <!-- Integration pills bar -->
+      <div class="integration-bar anim-fade-up">
+        <span class="integration-pill">BMV</span>
+        <span class="integration-pill">FIX Protocol</span>
+        <span class="integration-pill">Bloomberg</span>
+        <span class="integration-pill">DMA</span>
+        <span class="integration-pill">STP</span>
+      </div>
+
+    </div><!-- /.container -->
+  </section>
+
+
+  <!-- ====================================================================
+       SECCIÓN 6 — CTA FINAL
+       ==================================================================== -->
+  <section id="contacto" class="section-cta">
+    <div class="container">
+      <p class="cta-eyebrow">¿Listo para el siguiente paso?</p>
+      <h2 class="cta-title">Configuremos juntos tu workflow ideal.</h2>
+      <p class="cta-desc">
+        Cuéntanos sobre tu modelo de negocio y te mostramos qué módulos
+        de Lumina se adaptan mejor a tu operatoria actual y futura.
+      </p>
+      <a href="#contacto" class="cta-button">Solicitar una Demo</a>
+      <hr class="cta-hr">
+    </div>
+  </section>
+
+
+  <!-- ====================================================================
+       FOOTER
+       ==================================================================== -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-inner">
+
+        <!-- Brand -->
+        <div>
+          <div class="footer-logo">
+            <!-- Lumina logomark -->
+            <svg class="footer-logo-mark" viewBox="0 0 32 32" aria-hidden="true" fill="none">
+              <polygon points="16,4 28,26 4,26"
+                       stroke="rgba(196,181,253,0.85)" stroke-width="2" fill="none"/>
+              <polygon points="16,10 23,24 9,24"
+                       fill="rgba(124,58,237,0.45)" stroke="rgba(196,181,253,0.5)" stroke-width="1"/>
+            </svg>
+            <span class="footer-logo-text">lumina</span>
+          </div>
+          <p class="footer-tagline">Capital Markets Technology for Latin America</p>
+        </div>
+
+        <!-- Nav links -->
+        <nav aria-label="Footer">
+          <ul class="footer-links">
+            <li><a href="#arquitectura">Arquitectura</a></li>
+            <li><a href="#instalaciones">Instalaciones</a></li>
+            <li><a href="#tecnologia">Tecnología</a></li>
+          </ul>
+        </nav>
+
+        <!-- Copyright -->
+        <p class="footer-copy">© 2023 Lumina Americas. Todos los derechos reservados.</p>
+
+      </div>
+    </div>
+  </footer>
+
+
+  <!-- ====================================================================
+       SCRIPT — Tabs, Accordion & Scroll animations (Prompt 2)
+       ==================================================================== -->
+  <script>
+
+    /* ------------------------------------------------------------------
+       TABS — Desktop interaction
+       ------------------------------------------------------------------ */
+    (function initTabs() {
+      const tabBtns   = document.querySelectorAll('.tab-btn');
+      const tabPanels = document.querySelectorAll('.tab-panel');
+
+      function activateTab(idx) {
+        tabBtns.forEach((btn, i) => {
+          btn.classList.toggle('is-active', i === idx);
+          btn.setAttribute('aria-selected', i === idx ? 'true' : 'false');
+        });
+        tabPanels.forEach((panel, i) => {
+          panel.classList.toggle('is-active', i === idx);
+        });
+      }
+
+      tabBtns.forEach((btn, idx) => {
+        btn.addEventListener('click', () => activateTab(idx));
+
+        /* Keyboard navigation (← →) */
+        btn.addEventListener('keydown', e => {
+          if (e.key === 'ArrowRight') {
+            const next = Math.min(idx + 1, tabBtns.length - 1);
+            activateTab(next);
+            tabBtns[next].focus();
+          }
+          if (e.key === 'ArrowLeft') {
+            const prev = Math.max(idx - 1, 0);
+            activateTab(prev);
+            tabBtns[prev].focus();
+          }
+        });
+      });
+    })();
+
+
+    /* ------------------------------------------------------------------
+       ACCORDION — Mobile interaction
+       ------------------------------------------------------------------ */
+    (function initAccordion() {
+      const triggers = document.querySelectorAll('.accordion-trigger');
+
+      triggers.forEach(trigger => {
+        trigger.addEventListener('click', () => {
+          const body   = trigger.nextElementSibling; /* .accordion-body */
+          const isOpen = body.classList.contains('is-open');
+
+          /* Close all open items */
+          triggers.forEach(t => {
+            t.classList.remove('is-open');
+            t.setAttribute('aria-expanded', 'false');
+            const b = t.nextElementSibling;
+            if (b) b.classList.remove('is-open');
+          });
+
+          /* If it was closed, open it */
+          if (!isOpen) {
+            trigger.classList.add('is-open');
+            trigger.setAttribute('aria-expanded', 'true');
+            body.classList.add('is-open');
+          }
+        });
+      });
+    })();
+
+
+    /* ------------------------------------------------------------------
+       SCROLL ANIMATIONS — Prompt 2 sections only
+       (The first script's observer runs before these sections are parsed)
+       ------------------------------------------------------------------ */
+    (function initScrollAnim2() {
+      const targets = document.querySelectorAll(
+        '#instalaciones .anim-fade-up, #tecnologia .anim-fade-up'
+      );
+
+      if (!('IntersectionObserver' in window)) {
+        targets.forEach(el => el.classList.add('is-visible'));
+        return;
+      }
+
+      const obs = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add('is-visible');
+          obs.unobserve(entry.target);
+        });
+      }, { rootMargin: '0px 0px -48px 0px', threshold: 0.1 });
+
+      targets.forEach(el => obs.observe(el));
+    })();
+
+  </script>
+
+</body>
+</html>
