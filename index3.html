@@ -8,7 +8,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
   <style>
     /* ======================================================
@@ -36,7 +36,7 @@
       --border-subtle:    rgba(124, 58, 237, 0.12);
       --border-light:     rgba(200, 210, 230, 0.5);
 
-      --font-display: 'DM Serif Display', Georgia, serif;
+      --font-display: 'Raleway', system-ui, -apple-system, sans-serif;
       --font-body:    'DM Sans', system-ui, -apple-system, sans-serif;
       --font-mono:    'JetBrains Mono', 'Courier New', monospace;
 
@@ -220,14 +220,14 @@
       gap: 6px;
     }
     .nav__logo-word {
-      font-family: var(--font-body);
+      font-family: var(--font-display);
       font-weight: 300;
       font-size: 22px;
-      letter-spacing: 0.20em;
+      letter-spacing: 0.22em;
       color: var(--text-primary);
       line-height: 1;
     }
-    .nav__logo-word span { color: var(--accent); font-weight: 600; }
+    .nav__logo-word span { color: var(--accent); font-weight: 500; }
     .nav__logo-product {
       font-family: var(--font-mono);
       font-size: 11px;
@@ -397,14 +397,17 @@
     .hero__h1 {
       font-family: var(--font-display);
       font-size: clamp(32px, 4.5vw, 56px);
-      line-height: 1.1;
-      letter-spacing: -0.02em;
+      font-weight: 300;
+      line-height: 1.15;
+      letter-spacing: 0.04em;
       color: var(--text-primary);
       margin-bottom: 24px;
     }
     .hero__h1 em {
-      font-style: italic;
+      font-style: normal;
+      font-weight: 600;
       color: var(--accent);
+      letter-spacing: 0.02em;
     }
 
     .hero__h2 {
@@ -643,7 +646,9 @@
     .challenge__title {
       font-family: var(--font-display);
       font-size: clamp(26px, 3vw, 36px);
+      font-weight: 300;
       line-height: 1.15;
+      letter-spacing: 0.06em;
       color: var(--text-on-dark);
       margin-bottom: 16px;
     }
@@ -714,7 +719,9 @@
     .solution__title {
       font-family: var(--font-display);
       font-size: clamp(26px, 3vw, 36px);
+      font-weight: 300;
       line-height: 1.15;
+      letter-spacing: 0.06em;
       color: var(--text-primary);
       margin-bottom: 16px;
     }
@@ -782,6 +789,8 @@
     .ba-panel__title {
       font-family: var(--font-display);
       font-size: 22px;
+      font-weight: 300;
+      letter-spacing: 0.05em;
       margin-bottom: 20px;
     }
     .ba-panel--before .ba-panel__title { color: var(--text-primary); }
@@ -857,7 +866,9 @@
     .pillars__title {
       font-family: var(--font-display);
       font-size: clamp(26px, 3vw, 36px);
+      font-weight: 300;
       line-height: 1.15;
+      letter-spacing: 0.06em;
       color: var(--text-primary);
       margin-bottom: 16px;
     }
@@ -961,7 +972,9 @@
     .differentials__title {
       font-family: var(--font-display);
       font-size: clamp(26px, 3vw, 36px);
+      font-weight: 300;
       line-height: 1.15;
+      letter-spacing: 0.06em;
       color: var(--text-primary);
       margin-bottom: 16px;
     }
@@ -1070,7 +1083,9 @@
     .profiles__title {
       font-family: var(--font-display);
       font-size: clamp(26px, 3vw, 36px);
+      font-weight: 300;
       line-height: 1.15;
+      letter-spacing: 0.06em;
       color: var(--text-primary);
       margin-bottom: 16px;
     }
@@ -1125,6 +1140,8 @@
     .profile-card__title {
       font-family: var(--font-display);
       font-size: 22px;
+      font-weight: 300;
+      letter-spacing: 0.04em;
       color: var(--text-primary);
       margin-bottom: 14px;
       line-height: 1.2;
@@ -1214,8 +1231,11 @@
       font-style: italic;
     }
     .proof-quote__text {
+      font-family: var(--font-display);
       font-size: 16px;
+      font-weight: 300;
       line-height: 1.75;
+      letter-spacing: 0.03em;
       color: rgba(255,255,255,0.92);
       font-style: italic;
     }
@@ -1264,10 +1284,11 @@
     .cta-final__title {
       font-family: var(--font-display);
       font-size: clamp(28px, 3.5vw, 44px);
-      line-height: 1.1;
+      font-weight: 300;
+      line-height: 1.15;
       color: var(--text-primary);
       margin-bottom: 22px;
-      letter-spacing: -0.02em;
+      letter-spacing: 0.05em;
     }
     .cta-final__body {
       font-size: 17px;
@@ -1310,14 +1331,14 @@
     }
 
     .footer__brand-logo {
-      font-family: var(--font-body);
+      font-family: var(--font-display);
       font-weight: 300;
       font-size: 24px;
-      letter-spacing: 0.20em;
+      letter-spacing: 0.22em;
       color: #fff;
       margin-bottom: 14px;
     }
-    .footer__brand-logo span { color: var(--accent); font-weight: 600; }
+    .footer__brand-logo span { color: var(--accent); font-weight: 500; }
     .footer__brand-desc {
       font-size: 13.5px;
       color: rgba(255,255,255,0.45);
