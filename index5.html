@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lumina SWIFT Connector — Deck Comercial</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #2E2E57;
+    --navy-dark: #1e1e3a;
+    --navy-light: #3d3d6b;
+    --blue: #4A92CE;
+    --blue-light: #6db0e8;
+    --blue-pale: #E6F1FB;
+    --gray-light: #EEEFEF;
+    --gray-mid: #808285;
+    --white: #ffffff;
+    --text-on-navy: rgba(255,255,255,0.85);
+    --text-on-navy-muted: rgba(255,255,255,0.55);
+    --border-navy: rgba(74,146,206,0.2);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: 'Roboto', sans-serif;
+    background: #0f0f1e;
+    color: var(--white);
+    overflow: hidden;
+    width: 100vw;
+    height: 100vh;
+  }
+
+  /* DECK CONTAINER */
+  .deck { width:100vw; height:100vh; position:relative; }
+  .slide {
+    position: absolute; inset: 0;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.4s ease;
+    display: flex; flex-direction: column;
+  }
+  .slide.active { opacity:1; pointer-events:all; }
+
+  /* NAV */
+  .nav {
+    position: fixed; bottom: 28px; left:50%; transform:translateX(-50%);
+    display: flex; align-items:center; gap:16px; z-index:100;
+    background: rgba(46,46,87,0.85); backdrop-filter: blur(8px);
+    border: 1px solid var(--border-navy);
+    border-radius: 40px; padding: 10px 20px;
+  }
+  .nav-btn {
+    background: none; border: none; color: var(--blue-light);
+    cursor:pointer; font-size:16px; padding:4px 8px;
+    border-radius:6px; transition: background 0.2s;
+    font-family:'Roboto',sans-serif;
+  }
+  .nav-btn:hover { background: rgba(74,146,206,0.2); }
+  .nav-dots { display:flex; gap:7px; align-items:center; }
+  .dot {
+    width:7px; height:7px; border-radius:50%;
+    background: rgba(74,146,206,0.3); cursor:pointer;
+    transition: all 0.2s;
+  }
+  .dot.active { background: var(--blue); width:20px; border-radius:4px; }
+  .slide-counter {
+    font-size:11px; color: var(--text-on-navy-muted);
+    min-width:36px; text-align:center;
+  }
+
+  /* HEADER BAR */
+  .slide-header {
+    background: var(--navy);
+    padding: 16px 40px;
+    display:flex; align-items:center; justify-content:space-between;
+    border-bottom: 1px solid var(--border-navy);
+    flex-shrink:0;
+  }
+  .logo-text { font-size:15px; font-weight:500; letter-spacing:0.01em; }
+  .logo-lumina { color: var(--white); }
+  .logo-americas { color: var(--blue); }
+  .logo-dot { display:inline-block; width:4px; height:4px; border-radius:50%; background:var(--blue); margin:0 1px 3px; vertical-align:middle; }
+  .slide-label {
+    font-size:11px; font-weight:500; color:var(--text-on-navy-muted);
+    letter-spacing:0.08em; text-transform:uppercase;
+  }
+  .product-tag {
+    font-size:11px; font-weight:500; color:var(--blue);
+    background: rgba(74,146,206,0.12); border:1px solid rgba(74,146,206,0.3);
+    padding:3px 10px; border-radius:20px; letter-spacing:0.04em;
+  }
+
+  /* SLIDE BODY */
+  .slide-body { flex:1; overflow:hidden; position:relative; }
+
+  /* =========================================================
+     SLIDE 1 — PORTADA
+  ========================================================= */
+  .s1 { background: var(--navy-dark); }
+  .s1 .slide-body {
+    display:flex; flex-direction:column;
+    align-items:center; justify-content:center;
+    position:relative; overflow:hidden;
+  }
+  .s1-bg {
+    position:absolute; inset:0;
+    background:
+      radial-gradient(ellipse 60% 50% at 80% 50%, rgba(74,146,206,0.08) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 60% at 20% 80%, rgba(46,46,87,0.8) 0%, transparent 60%);
+  }
+  .s1-lines {
+    position:absolute; inset:0; opacity:0.07;
+    background-image:
+      repeating-linear-gradient(135deg, var(--blue) 0, var(--blue) 1px, transparent 0, transparent 50%);
+    background-size: 40px 40px;
+  }
+  .s1-content { position:relative; text-align:center; max-width:700px; padding:0 40px; }
+  .s1-eyebrow {
+    font-size:11px; font-weight:500; letter-spacing:0.14em; text-transform:uppercase;
+    color:var(--blue); margin-bottom:20px;
+    display:flex; align-items:center; justify-content:center; gap:10px;
+  }
+  .s1-eyebrow::before, .s1-eyebrow::after {
+    content:''; flex:1; max-width:60px; height:1px; background: rgba(74,146,206,0.4);
+  }
+  .s1-title {
+    font-size:44px; font-weight:300; line-height:1.15;
+    color:var(--white); margin-bottom:10px; letter-spacing:-0.01em;
+  }
+  .s1-title strong { font-weight:500; color:var(--blue-light); }
+  .s1-subtitle {
+    font-size:16px; font-weight:300; color:var(--text-on-navy-muted);
+    line-height:1.6; margin-bottom:36px;
+  }
+  .s1-tags { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+  .s1-tag {
+    font-size:11px; font-weight:500; padding:5px 14px; border-radius:20px;
+    border:1px solid rgba(74,146,206,0.35); color:var(--blue-light);
+    background: rgba(74,146,206,0.08); letter-spacing:0.04em;
+  }
+  .s1-footer {
+    position:absolute; bottom:0; left:0; right:0;
+    padding:14px 40px;
+    border-top:1px solid var(--border-navy);
+    display:flex; justify-content:space-between; align-items:center;
+  }
+  .s1-footer-text { font-size:11px; color:var(--text-on-navy-muted); }
+
+  /* =========================================================
+     SLIDE 2 — EL CONTEXTO DE MERCADO
+  ========================================================= */
+  .s2 { background:#12122a; }
+  .s2 .slide-body {
+    display:grid; grid-template-columns:1fr 1fr;
+    gap:0; padding:32px 40px; overflow:auto;
+  }
+  .s2-left { padding-right:32px; border-right:1px solid var(--border-navy); }
+  .s2-right { padding-left:32px; }
+  .section-title {
+    font-size:11px; font-weight:500; letter-spacing:0.1em; text-transform:uppercase;
+    color:var(--blue); margin-bottom:20px; display:flex; align-items:center; gap:8px;
+  }
+  .section-title::after { content:''; flex:1; height:1px; background:var(--border-navy); }
+  .s2-headline {
+    font-size:26px; font-weight:300; line-height:1.3; color:var(--white);
+    margin-bottom:16px;
+  }
+  .s2-headline strong { font-weight:500; color:var(--blue-light); }
+  .s2-body {
+    font-size:13px; font-weight:300; color:var(--text-on-navy-muted);
+    line-height:1.7; margin-bottom:20px;
+  }
+  .timeline { display:flex; flex-direction:column; gap:0; }
+  .tl-item { display:flex; gap:14px; position:relative; padding-bottom:16px; }
+  .tl-item:last-child { padding-bottom:0; }
+  .tl-left { display:flex; flex-direction:column; align-items:center; width:28px; flex-shrink:0; }
+  .tl-dot-outer {
+    width:28px; height:28px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0; font-size:10px; font-weight:500;
+  }
+  .tl-urgent { background:rgba(226,75,74,0.15); border:1px solid rgba(226,75,74,0.5); color:#F09595; }
+  .tl-soon { background:rgba(239,159,39,0.12); border:1px solid rgba(239,159,39,0.4); color:#FAC775; }
+  .tl-mid { background:rgba(74,146,206,0.12); border:1px solid rgba(74,146,206,0.35); color:var(--blue-light); }
+  .tl-far { background:rgba(128,130,133,0.12); border:1px solid rgba(128,130,133,0.3); color:#B4B2A9; }
+  .tl-line { flex:1; width:1px; background:var(--border-navy); margin-top:4px; }
+  .tl-content { padding-top:4px; }
+  .tl-date { font-size:10px; font-weight:500; letter-spacing:0.06em; margin-bottom:3px; }
+  .tl-urgent .tl-dt-txt { color:#F09595; }
+  .tl-soon .tl-dt-txt { color:#FAC775; }
+  .tl-mid .tl-dt-txt { color:var(--blue-light); }
+  .tl-far .tl-dt-txt { color:#B4B2A9; }
+  .tl-desc { font-size:12px; color:var(--text-on-navy-muted); line-height:1.5; }
+  .tl-impact { font-size:11px; font-weight:500; margin-top:4px; }
+
+  .info-cards { display:flex; flex-direction:column; gap:10px; }
+  .info-card {
+    background:rgba(255,255,255,0.03); border:1px solid var(--border-navy);
+    border-radius:8px; padding:14px 16px;
+    border-left:3px solid var(--blue);
+  }
+  .info-card.alert { border-left-color:#EF9F27; }
+  .info-card-title { font-size:12px; font-weight:500; color:var(--white); margin-bottom:5px; }
+  .info-card-body { font-size:12px; color:var(--text-on-navy-muted); line-height:1.55; }
+
+  /* =========================================================
+     SLIDE 3 — ARQUITECTURA DE LA SOLUCIÓN
+  ========================================================= */
+  .s3 { background:#12122a; }
+  .s3 .slide-body { padding:32px 40px; overflow:auto; }
+  .s3-arch {
+    display:flex; align-items:center; justify-content:center;
+    gap:0; margin:24px 0;
+  }
+  .arch-block {
+    background:rgba(255,255,255,0.04); border:1px solid var(--border-navy);
+    border-radius:10px; padding:16px 18px; text-align:center; min-width:140px;
+  }
+  .arch-block.lumina-block {
+    background:rgba(74,146,206,0.1); border-color:rgba(74,146,206,0.5);
+  }
+  .arch-icon { font-size:22px; margin-bottom:8px; }
+  .arch-name { font-size:12px; font-weight:500; color:var(--white); margin-bottom:3px; }
+  .arch-sub { font-size:10px; color:var(--text-on-navy-muted); line-height:1.4; }
+  .arch-arrow {
+    display:flex; flex-direction:column; align-items:center;
+    padding:0 8px; gap:4px; min-width:80px;
+  }
+  .arch-arrow-line {
+    height:2px; width:100%; background:linear-gradient(90deg, var(--border-navy), rgba(74,146,206,0.5), var(--border-navy));
+    position:relative;
+  }
+  .arch-arrow-line::after {
+    content:'▶'; position:absolute; right:-6px; top:-8px;
+    font-size:10px; color:var(--blue); opacity:0.7;
+  }
+  .arch-protocol { font-size:10px; color:var(--blue); font-weight:500; text-align:center; }
+  .s3-features {
+    display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:20px;
+  }
+  .feat-card {
+    background:rgba(255,255,255,0.03); border:1px solid var(--border-navy);
+    border-radius:8px; padding:14px 16px;
+  }
+  .feat-title { font-size:12px; font-weight:500; color:var(--white); margin-bottom:6px; display:flex; align-items:center; gap:7px; }
+  .feat-dot { width:6px; height:6px; border-radius:50%; background:var(--blue); flex-shrink:0; }
+  .feat-body { font-size:11px; color:var(--text-on-navy-muted); line-height:1.55; }
+  .msg-grid {
+    display:grid; grid-template-columns:repeat(4,1fr); gap:6px; margin-top:20px;
+  }
+  .msg-group { background:rgba(255,255,255,0.03); border:1px solid var(--border-navy); border-radius:8px; padding:12px 14px; }
+  .msg-group-title { font-size:10px; font-weight:500; color:var(--blue); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:8px; }
+  .msg-item { font-size:10px; color:var(--text-on-navy-muted); line-height:1.8; }
+  .msg-code { color:var(--blue-light); font-weight:500; }
+
+  /* =========================================================
+     SLIDE 4 — COMPETIDORES
+  ========================================================= */
+  .s4 { background:#12122a; }
+  .s4 .slide-body { padding:28px 40px; overflow:auto; }
+  .comp-table-wrap { overflow:hidden; border-radius:10px; border:1px solid var(--border-navy); margin-top:16px; }
+  .comp-table { width:100%; border-collapse:collapse; }
+  .comp-table thead tr { background:rgba(46,46,87,0.9); }
+  .comp-table th {
+    padding:10px 14px; text-align:left;
+    font-size:10px; font-weight:500; color:var(--text-on-navy-muted);
+    letter-spacing:0.08em; text-transform:uppercase;
+    border-bottom:1px solid var(--border-navy);
+  }
+  .comp-table td {
+    padding:12px 14px; font-size:12px;
+    color:var(--text-on-navy-muted); vertical-align:top; line-height:1.5;
+    border-bottom:1px solid var(--border-navy);
+  }
+  .comp-table tr:last-child td { border-bottom:none; }
+  .comp-table tr.lumina-row td { color:var(--white); background:rgba(74,146,206,0.07); }
+  .comp-badge {
+    display:inline-block; font-size:10px; font-weight:500;
+    padding:2px 8px; border-radius:20px;
+  }
+  .cb-gray { background:rgba(128,130,133,0.2); color:#D3D1C7; border:1px solid rgba(128,130,133,0.3); }
+  .cb-blue { background:rgba(74,146,206,0.15); color:var(--blue-light); border:1px solid rgba(74,146,206,0.4); }
+  .cb-red { background:rgba(226,75,74,0.12); color:#F09595; border:1px solid rgba(226,75,74,0.35); }
+  .cb-green { background:rgba(99,153,34,0.15); color:#C0DD97; border:1px solid rgba(99,153,34,0.4); }
+  .comp-highlight { color:var(--white); font-weight:500; }
+  .s4-note {
+    margin-top:14px; padding:10px 16px;
+    background:rgba(74,146,206,0.07); border:1px solid rgba(74,146,206,0.2);
+    border-radius:8px; font-size:11px; color:var(--text-on-navy-muted); line-height:1.6;
+  }
+  .s4-note strong { color:var(--blue-light); }
+
+  /* =========================================================
+     SLIDE 5 — ESTRATEGIA DOS CAPAS
+  ========================================================= */
+  .s5 { background:#12122a; }
+  .s5 .slide-body {
+    display:grid; grid-template-columns:1fr 1fr;
+    gap:0; padding:28px 40px; overflow:auto;
+  }
+  .s5-col { display:flex; flex-direction:column; gap:12px; }
+  .s5-col:first-child { padding-right:24px; border-right:1px solid var(--border-navy); }
+  .s5-col:last-child { padding-left:24px; }
+  .layer-header {
+    display:flex; align-items:center; gap:12px; margin-bottom:4px;
+  }
+  .layer-num {
+    width:32px; height:32px; border-radius:50%; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+    font-size:14px; font-weight:500;
+  }
+  .layer-num-1 { background:rgba(83,74,183,0.25); border:1px solid rgba(83,74,183,0.6); color:#CECBF6; }
+  .layer-num-2 { background:rgba(29,158,117,0.2); border:1px solid rgba(29,158,117,0.5); color:#9FE1CB; }
+  .layer-title { font-size:16px; font-weight:500; color:var(--white); line-height:1.3; }
+  .layer-subtitle { font-size:11px; color:var(--text-on-navy-muted); margin-top:1px; }
+  .layer-body-text { font-size:12px; color:var(--text-on-navy-muted); line-height:1.65; }
+  .layer-metrics {
+    display:grid; grid-template-columns:1fr 1fr; gap:8px;
+  }
+  .metric-card {
+    background:rgba(255,255,255,0.03); border:1px solid var(--border-navy);
+    border-radius:8px; padding:12px 14px;
+  }
+  .metric-num { font-size:24px; font-weight:500; color:var(--white); line-height:1; }
+  .metric-label { font-size:11px; color:var(--text-on-navy-muted); margin-top:4px; }
+  .metric-num-1 { color:#AFA9EC; }
+  .metric-num-2 { color:#5DCAA5; }
+  .layer-tags { display:flex; flex-wrap:wrap; gap:6px; }
+  .ltag {
+    font-size:10px; font-weight:500; padding:3px 9px; border-radius:14px;
+  }
+  .ltag-purple { background:rgba(83,74,183,0.18); color:#CECBF6; border:1px solid rgba(83,74,183,0.35); }
+  .ltag-teal { background:rgba(29,158,117,0.15); color:#9FE1CB; border:1px solid rgba(29,158,117,0.35); }
+  .dev-badge {
+    display:inline-flex; align-items:center; gap:6px;
+    background:rgba(239,159,39,0.1); border:1px solid rgba(239,159,39,0.35);
+    color:#FAC775; font-size:11px; font-weight:500;
+    padding:5px 12px; border-radius:20px;
+  }
+  .dev-dot { width:6px; height:6px; border-radius:50%; background:#FAC775; }
+  .avail-badge {
+    display:inline-flex; align-items:center; gap:6px;
+    background:rgba(99,153,34,0.12); border:1px solid rgba(99,153,34,0.4);
+    color:#C0DD97; font-size:11px; font-weight:500;
+    padding:5px 12px; border-radius:20px;
+  }
+  .avail-dot { width:6px; height:6px; border-radius:50%; background:#C0DD97; }
+
+  /* =========================================================
+     SLIDE 6 — PROPUESTA DE VALOR
+  ========================================================= */
+  .s6 { background:#12122a; }
+  .s6 .slide-body { padding:28px 40px; overflow:auto; }
+  .value-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:16px; }
+  .value-card {
+    background:rgba(255,255,255,0.03); border:1px solid var(--border-navy);
+    border-radius:10px; padding:18px 16px;
+    display:flex; flex-direction:column; gap:8px;
+    transition:border-color 0.2s;
+  }
+  .value-card:hover { border-color:rgba(74,146,206,0.4); }
+  .value-icon {
+    width:34px; height:34px; border-radius:8px;
+    background:rgba(74,146,206,0.12); border:1px solid rgba(74,146,206,0.25);
+    display:flex; align-items:center; justify-content:center; font-size:16px;
+  }
+  .value-title { font-size:13px; font-weight:500; color:var(--white); line-height:1.3; }
+  .value-body { font-size:11px; color:var(--text-on-navy-muted); line-height:1.6; flex:1; }
+  .value-tag { font-size:10px; color:var(--blue); font-weight:500; }
+  .vs-row {
+    display:flex; gap:12px; margin-top:16px;
+    background:rgba(255,255,255,0.03); border:1px solid var(--border-navy);
+    border-radius:10px; padding:14px 18px; align-items:center;
+  }
+  .vs-label { font-size:11px; color:var(--text-on-navy-muted); min-width:160px; }
+  .vs-lumina { flex:1; display:flex; align-items:center; gap:6px; }
+  .vs-comp { flex:1; display:flex; align-items:center; gap:6px; }
+  .vs-sep { color:var(--border-navy); font-size:18px; }
+
+  /* =========================================================
+     SLIDE 7 — MODELO DE NEGOCIO
+  ========================================================= */
+  .s7 { background:#12122a; }
+  .s7 .slide-body {
+    display:grid; grid-template-columns:1fr 1fr; gap:0;
+    padding:28px 40px; overflow:auto;
+  }
+  .s7-left { padding-right:28px; border-right:1px solid var(--border-navy); }
+  .s7-right { padding-left:28px; }
+  .model-card {
+    background:rgba(74,146,206,0.06); border:1px solid rgba(74,146,206,0.25);
+    border-radius:10px; padding:18px;
+  }
+  .model-title { font-size:13px; font-weight:500; color:var(--white); margin-bottom:14px; }
+  .model-row {
+    display:flex; justify-content:space-between; align-items:flex-start;
+    padding:10px 0; border-bottom:1px solid var(--border-navy);
+  }
+  .model-row:last-child { border-bottom:none; padding-bottom:0; }
+  .model-row-label { font-size:12px; color:var(--text-on-navy-muted); }
+  .model-row-note { font-size:10px; color:var(--text-on-navy-muted); opacity:0.7; margin-top:2px; }
+  .model-row-value { font-size:13px; font-weight:500; color:var(--white); text-align:right; }
+  .model-row-value.zero { color:#5DCAA5; }
+  .pending { color:var(--blue-light); font-size:12px; }
+  .icp-section { margin-top:20px; }
+  .icp-title { font-size:11px; font-weight:500; letter-spacing:0.08em; text-transform:uppercase; color:var(--blue); margin-bottom:12px; }
+  .icp-card {
+    background:rgba(255,255,255,0.03); border:1px solid var(--border-navy);
+    border-radius:8px; padding:12px 14px; margin-bottom:8px;
+  }
+  .icp-card:last-child { margin-bottom:0; }
+  .icp-card-title { font-size:12px; font-weight:500; color:var(--white); margin-bottom:4px; }
+  .icp-card-body { font-size:11px; color:var(--text-on-navy-muted); line-height:1.55; }
+  .roi-note {
+    margin-top:14px; padding:12px 16px;
+    background:rgba(239,159,39,0.08); border:1px solid rgba(239,159,39,0.3);
+    border-radius:8px; font-size:11px; color:rgba(250,199,117,0.9); line-height:1.6;
+  }
+  .roi-note strong { color:#FAC775; }
+  .profil-tags { display:flex; flex-wrap:wrap; gap:5px; margin-top:8px; }
+  .ptag {
+    font-size:10px; padding:2px 8px; border-radius:12px; font-weight:500;
+    background:rgba(74,146,206,0.1); color:var(--blue-light);
+    border:1px solid rgba(74,146,206,0.25);
+  }
+
+  /* =========================================================
+     SLIDE 8 — POR QUÉ LUMINA AMERICAS
+  ========================================================= */
+  .s8 { background:#12122a; }
+  .s8 .slide-body { padding:28px 40px; overflow:auto; }
+  .credencial-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:16px; }
+  .cred-card {
+    background:rgba(255,255,255,0.03); border:1px solid var(--border-navy);
+    border-radius:10px; padding:18px 16px; text-align:center;
+  }
+  .cred-num { font-size:28px; font-weight:500; color:var(--blue-light); line-height:1; margin-bottom:6px; }
+  .cred-label { font-size:11px; color:var(--text-on-navy-muted); line-height:1.4; }
+  .client-grid {
+    display:grid; grid-template-columns:repeat(5,1fr); gap:8px; margin-top:16px;
+  }
+  .client-pill {
+    background:rgba(255,255,255,0.04); border:1px solid var(--border-navy);
+    border-radius:6px; padding:8px 10px; text-align:center;
+    font-size:11px; color:var(--text-on-navy-muted); font-weight:400;
+  }
+  .client-pill.highlight { border-color:rgba(74,146,206,0.4); color:var(--blue-light); background:rgba(74,146,206,0.07); }
+  .s8-copy {
+    margin-top:16px; padding:14px 18px;
+    background:rgba(74,146,206,0.06); border:1px solid rgba(74,146,206,0.2);
+    border-radius:8px; font-size:12px; color:var(--text-on-navy-muted); line-height:1.65;
+  }
+  .s8-copy strong { color:var(--white); }
+
+  /* =========================================================
+     SLIDE 9 — PRÓXIMOS PASOS
+  ========================================================= */
+  .s9 { background: var(--navy-dark); }
+  .s9 .slide-body {
+    display:flex; flex-direction:column;
+    align-items:center; justify-content:center;
+    padding:28px 40px; position:relative; overflow:hidden;
+  }
+  .s9-bg {
+    position:absolute; inset:0;
+    background:
+      radial-gradient(ellipse 50% 60% at 50% 50%, rgba(74,146,206,0.07) 0%, transparent 70%);
+  }
+  .s9-lines {
+    position:absolute; inset:0; opacity:0.05;
+    background-image: repeating-linear-gradient(135deg, var(--blue) 0, var(--blue) 1px, transparent 0, transparent 50%);
+    background-size: 40px 40px;
+  }
+  .s9-content { position:relative; width:100%; max-width:700px; }
+  .s9-title { font-size:28px; font-weight:300; color:var(--white); text-align:center; margin-bottom:8px; }
+  .s9-title strong { font-weight:500; color:var(--blue-light); }
+  .s9-sub { font-size:13px; color:var(--text-on-navy-muted); text-align:center; margin-bottom:32px; }
+  .steps-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:28px; }
+  .step-card {
+    background:rgba(255,255,255,0.04); border:1px solid var(--border-navy);
+    border-radius:10px; padding:18px 16px;
+  }
+  .step-num {
+    font-size:20px; font-weight:500; color:var(--blue); margin-bottom:8px; line-height:1;
+  }
+  .step-title { font-size:13px; font-weight:500; color:var(--white); margin-bottom:5px; }
+  .step-body { font-size:11px; color:var(--text-on-navy-muted); line-height:1.55; }
+  .contact-box {
+    background:rgba(74,146,206,0.08); border:1px solid rgba(74,146,206,0.3);
+    border-radius:10px; padding:16px 24px;
+    display:flex; justify-content:space-between; align-items:center;
+  }
+  .contact-label { font-size:11px; color:var(--text-on-navy-muted); margin-bottom:4px; }
+  .contact-value { font-size:13px; color:var(--white); font-weight:400; }
+  .contact-cta {
+    background:var(--blue); color:var(--white); border:none;
+    padding:10px 22px; border-radius:6px; font-size:12px; font-weight:500;
+    cursor:pointer; font-family:'Roboto',sans-serif;
+    transition:background 0.2s;
+  }
+  .contact-cta:hover { background:var(--blue-light); }
+</style>
+</head>
+<body>
+<div class="deck">
+
+  <!-- ===== SLIDE 1 — PORTADA ===== -->
+  <div class="slide s1 active" id="slide-1">
+    <div class="slide-header">
+      <div class="logo-text">
+        <span class="logo-dot"></span><span class="logo-dot"></span>
+        <span class="logo-lumina"> lumina</span><span class="logo-americas">americas</span>
+      </div>
+      <div class="product-tag">Lumina SWIFT Connector</div>
+    </div>
+    <div class="slide-body">
+      <div class="s1-bg"></div>
+      <div class="s1-lines"></div>
+      <div class="s1-content">
+        <div class="s1-eyebrow">Presentación Comercial · 2025</div>
+        <div class="s1-title">
+          Conectividad <strong>SWIFT–INDEVAL</strong><br>nativa para el mercado mexicano
+        </div>
+        <div class="s1-subtitle">
+          Automatice la liquidación de valores sin intermediarios,<br>
+          con costo fijo y control operativo total.
+        </div>
+        <div class="s1-tags">
+          <span class="s1-tag">ISO 15022 · ISO 20022</span>
+          <span class="s1-tag">FOP · DVP · Efectivo</span>
+          <span class="s1-tag">Derechos Patrimoniales</span>
+          <span class="s1-tag">Monitor en tiempo real</span>
+        </div>
+      </div>
+      <div class="s1-footer">
+        <div class="s1-footer-text">Confidencial · Para uso exclusivo del destinatario</div>
+        <div class="s1-footer-text">www.luminaamericas.com</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE 2 — CONTEXTO DE MERCADO ===== -->
+  <div class="slide s2" id="slide-2">
+    <div class="slide-header">
+      <div class="logo-text">
+        <span class="logo-dot"></span><span class="logo-dot"></span>
+        <span class="logo-lumina"> lumina</span><span class="logo-americas">americas</span>
+      </div>
+      <div class="slide-label">El contexto de mercado</div>
+    </div>
+    <div class="slide-body">
+      <div class="s2-left">
+        <div class="section-title">La transformación digital de INDEVAL</div>
+        <div class="s2-headline">
+          El mercado de valores mexicano está <strong>migrando a SWIFT</strong> — y los plazos ya corren
+        </div>
+        <div class="s2-body">
+          INDEVAL opera como el único Depósito Central de Valores de México, con $38.6 billones de pesos en custodia. Su modernización hacia SWIFT e ISO 20022 es el mayor cambio de infraestructura en décadas — y crea una ventana de oportunidad única para las instituciones que actúen primero.
+        </div>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-left">
+              <div class="tl-dot-outer tl-urgent"><span>!</span></div>
+              <div class="tl-line"></div>
+            </div>
+            <div class="tl-content">
+              <div class="tl-date" style="color:#F09595">Mayo 2024 — ocurrido</div>
+              <div class="tl-desc">México migró a ciclo T+1. La ventana para resolver excepciones se redujo a la mitad — mayor presión sobre automatización y STP.</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-left">
+              <div class="tl-dot-outer tl-urgent"><span>!</span></div>
+              <div class="tl-line"></div>
+            </div>
+            <div class="tl-content">
+              <div class="tl-date" style="color:#F09595">30 jun 2025 — próximo</div>
+              <div class="tl-desc">Vencimiento de esquemas contractuales del Anexo "Pago de Servicios" de INDEVAL (Banxico/CNBV). Punto natural de revisión de conectividad.</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-left">
+              <div class="tl-dot-outer tl-soon"><span>→</span></div>
+              <div class="tl-line"></div>
+            </div>
+            <div class="tl-content">
+              <div class="tl-date" style="color:#FAC775">Enero 2026</div>
+              <div class="tl-desc">La traducción de mensajes MT→MX pasa a tener costo en SWIFT. Penalización financiera directa para instituciones rezagadas.</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-left">
+              <div class="tl-dot-outer tl-mid"><span>→</span></div>
+              <div class="tl-line"></div>
+            </div>
+            <div class="tl-content">
+              <div class="tl-date" style="color:var(--blue-light)">Noviembre 2026</div>
+              <div class="tl-desc">Mandatorio: direcciones estructuradas en todos los mensajes ISO 20022. Proyecto de limpieza de datos de 6-12 meses. Empezar hoy.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="s2-right">
+        <div class="section-title">El protocolo PFI y sus proveedores</div>
+        <div class="info-cards">
+          <div class="info-card">
+            <div class="info-card-title">PFI — en transición hacia SWIFT</div>
+            <div class="info-card-body">El Protocolo Financiero INDEVAL (PFI) fue el canal dominante por décadas. INDEVAL mantiene hoy tres canales (Portal Dalí, PFI y SWIFT), pero su agenda de "Evolución Digital" promueve activamente la migración. El PFI no desaparece de golpe — se vuelve regulatoriamente riesgoso y tecnológicamente obsoleto.</div>
+          </div>
+          <div class="info-card alert">
+            <div class="info-card-title">LGEC y SPT — pivot hacia SWIFT, pero como intermediarios</div>
+            <div class="info-card-body">LGEC (EF-Indeval) y SPT están adaptando sus plataformas como capas de abstracción: el cliente sigue en su back-office, ellos traducen a ISO 20022. Siguen siendo intermediarios con costo variable por transacción — sin integración nativa con los sistemas internos del cliente.</div>
+          </div>
+          <div class="info-card">
+            <div class="info-card-title">La oportunidad: 9+ instituciones buscando alternativas</div>
+            <div class="info-card-body">Los clientes actuales de Lumina Americas en México que hoy operan vía LGEC/SPT están expuestos a este cambio. Con los hitos regulatorios en marcha, este es el momento natural de evaluar una alternativa nativa, sin intermediario y con costo fijo.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE 3 — LA SOLUCIÓN ===== -->
+  <div class="slide s3" id="slide-3">
+    <div class="slide-header">
+      <div class="logo-text">
+        <span class="logo-dot"></span><span class="logo-dot"></span>
+        <span class="logo-lumina"> lumina</span><span class="logo-americas">americas</span>
+      </div>
+      <div class="slide-label">La solución</div>
+    </div>
+    <div class="slide-body">
+      <div class="section-title" style="padding:0 0 0 0">Lumina SWIFT Connector — arquitectura y cobertura</div>
+      <div class="s3-arch">
+        <div class="arch-block lumina-block">
+          <div class="arch-icon">⚙️</div>
+          <div class="arch-name">Lumina Back-Office</div>
+          <div class="arch-sub">Operations · Treasury<br>workflow nativo</div>
+        </div>
+        <div class="arch-arrow">
+          <div class="arch-arrow-line"></div>
+          <div class="arch-protocol">JMS / Webservices</div>
+        </div>
+        <div class="arch-block lumina-block">
+          <div class="arch-icon">🔌</div>
+          <div class="arch-name">Lumina SWIFT Connector</div>
+          <div class="arch-sub">Produce y procesa<br>mensajes SWIFT</div>
+        </div>
+        <div class="arch-arrow">
+          <div class="arch-arrow-line"></div>
+          <div class="arch-protocol">SWIFT Messages</div>
+        </div>
+        <div class="arch-block">
+          <div class="arch-icon">🔒</div>
+          <div class="arch-name">SWIFT Gateway</div>
+          <div class="arch-sub">Propio de la institución<br>financiera</div>
+        </div>
+        <div class="arch-arrow">
+          <div class="arch-arrow-line"></div>
+          <div class="arch-protocol">Red SWIFT / CUG</div>
+        </div>
+        <div class="arch-block">
+          <div class="arch-icon">🏛️</div>
+          <div class="arch-name">INDEVAL</div>
+          <div class="arch-sub">Sistema DALI<br>$38.6B en custodia</div>
+        </div>
+      </div>
+      <div class="msg-grid">
+        <div class="msg-group">
+          <div class="msg-group-title">Valores — liquidación</div>
+          <div class="msg-item"><span class="msg-code">MT540</span> Recepción libre de pago</div>
+          <div class="msg-item"><span class="msg-code">MT541</span> Recepción contra pago</div>
+          <div class="msg-item"><span class="msg-code">MT542</span> Entrega libre de pago</div>
+          <div class="msg-item"><span class="msg-code">MT543</span> Entrega contra pago</div>
+          <div class="msg-item"><span class="msg-code">MT544-548</span> Confirmaciones</div>
+        </div>
+        <div class="msg-group">
+          <div class="msg-group-title">Efectivo</div>
+          <div class="msg-item"><span class="msg-code">MT202</span> Traspaso interbancario</div>
+          <div class="msg-item"><span class="msg-code">MT900</span> Confirmación retiro</div>
+          <div class="msg-item"><span class="msg-code">MT910</span> Confirmación depósito</div>
+          <div class="msg-item" style="margin-top:8px;font-weight:500;color:var(--white)">Consultas</div>
+          <div class="msg-item"><span class="msg-code">MT920/MT950</span> Saldos</div>
+          <div class="msg-item"><span class="msg-code">MT920/MT942</span> Movimientos</div>
+        </div>
+        <div class="msg-group">
+          <div class="msg-group-title">Derechos patrimoniales</div>
+          <div class="msg-item"><span class="msg-code">564</span> Notificación</div>
+          <div class="msg-item"><span class="msg-code">566</span> Confirmación</div>
+          <div class="msg-item"><span class="msg-code">567</span> Estado y procesamiento</div>
+          <div class="msg-item" style="margin-top:8px;font-weight:500;color:var(--white)">Posición</div>
+          <div class="msg-item"><span class="msg-code">MT549</span> Solicitud consulta</div>
+          <div class="msg-item"><span class="msg-code">MT535</span> Respuesta</div>
+        </div>
+        <div class="msg-group">
+          <div class="msg-group-title">Funcionalidades clave</div>
+          <div class="msg-item">Monitor interfaz SWIFT</div>
+          <div class="msg-item">Historial de workflow</div>
+          <div class="msg-item">Captura/mod. manual</div>
+          <div class="msg-item">Import/export masivo</div>
+          <div class="msg-item">Reprocesamiento</div>
+          <div class="msg-item">REST/JSON para consultas</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE 4 — COMPETIDORES ===== -->
+  <div class="slide s4" id="slide-4">
+    <div class="slide-header">
+      <div class="logo-text">
+        <span class="logo-dot"></span><span class="logo-dot"></span>
+        <span class="logo-lumina"> lumina</span><span class="logo-americas">americas</span>
+      </div>
+      <div class="slide-label">Landscape competitivo</div>
+    </div>
+    <div class="slide-body">
+      <div class="section-title">Cómo responde el mercado a la transición SWIFT</div>
+      <div class="comp-table-wrap">
+        <table class="comp-table">
+          <thead>
+            <tr>
+              <th>Proveedor</th>
+              <th>Estrategia</th>
+              <th>Modelo de precio</th>
+              <th>Integración back-office</th>
+              <th>Debilidad clave</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="comp-badge cb-gray">LGEC</span><br><span style="font-size:10px;color:var(--text-on-navy-muted)">EF-Indeval</span></td>
+              <td>Capa de abstracción entre back-office e INDEVAL. Traduce a ISO 20022. Cumple Circular 14/2017.</td>
+              <td><span class="comp-badge cb-red">Por transacción</span><br>+ implementación</td>
+              <td style="text-align:center">❌ Sin integración nativa</td>
+              <td>Intermediario con costo variable. Mayor volumen = mayor costo permanente.</td>
+            </tr>
+            <tr>
+              <td><span class="comp-badge cb-gray">SPT</span></td>
+              <td>Hub de mensajería: SWIFT + Reuters Deal Tracker. Tesorerías complejas (Nafin, Bancomext). ISO 20022 para pagos.</td>
+              <td><span class="comp-badge cb-red">Por transacción</span><br>+ implementación</td>
+              <td style="text-align:center">❌ Sin integración nativa</td>
+              <td>Overkill para instituciones medianas. Costo crece con volumen operativo.</td>
+            </tr>
+            <tr>
+              <td><span class="comp-badge cb-gray">Service Bureaus</span><br><span style="font-size:10px;color:var(--text-on-navy-muted)">ECS Fin, Axletree</span></td>
+              <td>Conectividad gestionada cloud. ISO 20022 nativo. Prometen 70% ahorro en TCO vs. infraestructura propia.</td>
+              <td><span class="comp-badge cb-gray">SaaS mensual</span></td>
+              <td style="text-align:center">❌ Requiere desarrollo propio</td>
+              <td>Proveedor offshore. Sin integración con sistemas locales. Riesgo regulatorio.</td>
+            </tr>
+            <tr class="lumina-row">
+              <td><span class="comp-badge cb-blue">Lumina SWIFT</span><br><span style="font-size:10px;color:var(--blue-light)">Lumina Americas</span></td>
+              <td>Conector <span class="comp-highlight">nativo</span> integrado en workflow de Operations/Treasury. Conecta al SWIFT Gateway propio de la institución.</td>
+              <td><span class="comp-badge cb-green">Licencia fija</span><br>+ mantenimiento</td>
+              <td style="text-align:center;color:#C0DD97">✓ Integración nativa</td>
+              <td style="color:var(--text-on-navy-muted);font-style:italic">Capa 2 standalone en desarrollo (~3-4 meses)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="s4-note">
+        <strong>Ventaja estructural de Lumina:</strong> LGEC y SPT cobran por cada mensaje enviado y recibido. Con T+1 y crecimiento de volumen, ese costo se incrementa permanentemente. Lumina ofrece <strong>costo fijo predecible</strong> independiente del volumen — la institución crece sin penalización económica.
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE 5 — ESTRATEGIA DOS CAPAS ===== -->
+  <div class="slide s5" id="slide-5">
+    <div class="slide-header">
+      <div class="logo-text">
+        <span class="logo-dot"></span><span class="logo-dot"></span>
+        <span class="logo-lumina"> lumina</span><span class="logo-americas">americas</span>
+      </div>
+      <div class="slide-label">Estrategia comercial</div>
+    </div>
+    <div class="slide-body">
+      <div class="s5-col">
+        <div class="layer-header">
+          <div class="layer-num layer-num-1">1</div>
+          <div>
+            <div class="layer-title">Reemplazo en clientes Lumina</div>
+            <div class="layer-subtitle">Upsell · Disponible hoy</div>
+          </div>
+        </div>
+        <div class="avail-badge"><div class="avail-dot"></div>Disponible hoy</div>
+        <div class="layer-body-text">
+          9+ clientes actuales de Lumina Americas en México operan via LGEC o SPT como intermediario PFI. Con los hitos regulatorios de 2025-2026 en marcha, este es el momento de consolidar esa conectividad dentro del ecosistema Lumina — eliminando al intermediario, reduciendo el costo variable y ganando visibilidad operativa total.
+        </div>
+        <div class="layer-metrics">
+          <div class="metric-card">
+            <div class="metric-num metric-num-1">9+</div>
+            <div class="metric-label">clientes con oportunidad inmediata</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-num metric-num-1">1</div>
+            <div class="metric-label">cliente referencia ya activo en producción</div>
+          </div>
+        </div>
+        <div class="layer-tags">
+          <span class="ltag ltag-purple">Integración nativa Operations/Treasury</span>
+          <span class="ltag ltag-purple">Sin intermediario</span>
+          <span class="ltag ltag-purple">Licencia fija vs. costo variable</span>
+          <span class="ltag ltag-purple">Menor fricción de venta</span>
+        </div>
+      </div>
+      <div class="s5-col">
+        <div class="layer-header">
+          <div class="layer-num layer-num-2">2</div>
+          <div>
+            <div class="layer-title">Producto standalone con API</div>
+            <div class="layer-subtitle">Nuevo mercado · En desarrollo</div>
+          </div>
+        </div>
+        <div class="dev-badge"><div class="dev-dot"></div>En desarrollo — 3 a 4 meses</div>
+        <div class="layer-body-text">
+          Microservicio independiente con API compatible con la interfaz de LGEC/SPT, más pantallas web de consulta. Permite a instituciones sin Lumina migrar cambiando solo el endpoint — sin rediseñar su arquitectura. La ventana de oportunidad es ahora: los hitos regulatorios generan evaluaciones activas en toda la industria.
+        </div>
+        <div class="layer-metrics">
+          <div class="metric-card">
+            <div class="metric-num metric-num-2">~30+</div>
+            <div class="metric-label">casas de bolsa y bancos con INDEVAL en México</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-num metric-num-2">API</div>
+            <div class="metric-label">compatible con interfaz LGEC/SPT</div>
+          </div>
+        </div>
+        <div class="layer-tags">
+          <span class="ltag ltag-teal">Mercado total casas de bolsa MX</span>
+          <span class="ltag ltag-teal">Sin necesidad de Lumina</span>
+          <span class="ltag ltag-teal">Migración mínima para el cliente</span>
+          <span class="ltag ltag-teal">Puerta de entrada al ecosistema</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE 6 — PROPUESTA DE VALOR ===== -->
+  <div class="slide s6" id="slide-6">
+    <div class="slide-header">
+      <div class="logo-text">
+        <span class="logo-dot"></span><span class="logo-dot"></span>
+        <span class="logo-lumina"> lumina</span><span class="logo-americas">americas</span>
+      </div>
+      <div class="slide-label">Propuesta de valor</div>
+    </div>
+    <div class="slide-body">
+      <div class="section-title">Por qué Lumina SWIFT Connector</div>
+      <div class="value-grid">
+        <div class="value-card">
+          <div class="value-icon">📊</div>
+          <div class="value-title">Costo fijo predecible</div>
+          <div class="value-body">Modelo de licencia + mantenimiento sin costo por transacción. A mayor volumen operativo, mayor la ventaja frente a LGEC y SPT que cobran por mensaje.</div>
+          <div class="value-tag">vs. modelo por transacción de competidores</div>
+        </div>
+        <div class="value-card">
+          <div class="value-icon">🔗</div>
+          <div class="value-title">Sin intermediario en el flujo crítico</div>
+          <div class="value-body">Lumina conecta directamente con el SWIFT Gateway propio de la institución. Elimina una dependencia de tercero en el proceso de liquidación — menos latencia, menos puntos de fallo.</div>
+          <div class="value-tag">arquitectura directa vs. capa de abstracción</div>
+        </div>
+        <div class="value-card">
+          <div class="value-icon">⚡</div>
+          <div class="value-title">Listo para T+1 y los mandatos 2026</div>
+          <div class="value-body">ISO 15022 y 20022 soportados. Preparado para el mandato de direcciones estructuradas de noviembre 2026 y el costo de traducción de enero 2026.</div>
+          <div class="value-tag">sin penalización por rezago regulatorio</div>
+        </div>
+        <div class="value-card">
+          <div class="value-icon">🛡️</div>
+          <div class="value-title">Control operativo completo</div>
+          <div class="value-body">Monitor de mensajes en tiempo real, historial de workflow por operación, trazabilidad completa. Captura manual, reprocesamiento masivo e individual para contingencias.</div>
+          <div class="value-tag">para Director de Operaciones / Back-Office</div>
+        </div>
+        <div class="value-card">
+          <div class="value-icon">🔧</div>
+          <div class="value-title">Integración nativa con Lumina</div>
+          <div class="value-body">No es un módulo aislado — se integra directamente al workflow de Lumina Operations y Treasury. Cero interfaces adicionales, cero puntos de fallo extra.</div>
+          <div class="value-tag">para clientes con suite Lumina activa</div>
+        </div>
+        <div class="value-card">
+          <div class="value-icon">🚀</div>
+          <div class="value-title">Migración sin fricción (Capa 2)</div>
+          <div class="value-body">API compatible con la interfaz de LGEC/SPT: el cliente cambia el endpoint, no su arquitectura. Inversión técnica mínima para migrar desde los proveedores actuales.</div>
+          <div class="value-tag">para instituciones sin Lumina</div>
+        </div>
+      </div>
+      <div class="vs-row">
+        <div class="vs-label" style="font-size:12px;font-weight:500;color:var(--white)">Costo total a largo plazo</div>
+        <div class="vs-lumina">
+          <span class="comp-badge cb-green" style="font-size:11px">Lumina</span>
+          <span style="font-size:12px;color:var(--text-on-navy-muted)">Licencia fija — costo constante independiente del volumen</span>
+        </div>
+        <div style="color:var(--border-navy);padding:0 8px">|</div>
+        <div class="vs-comp">
+          <span class="comp-badge cb-red" style="font-size:11px">LGEC / SPT</span>
+          <span style="font-size:12px;color:var(--text-on-navy-muted)">Por transacción — crece con T+1 y mayor automatización</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE 7 — MODELO DE NEGOCIO ===== -->
+  <div class="slide s7" id="slide-7">
+    <div class="slide-header">
+      <div class="logo-text">
+        <span class="logo-dot"></span><span class="logo-dot"></span>
+        <span class="logo-lumina"> lumina</span><span class="logo-americas">americas</span>
+      </div>
+      <div class="slide-label">Modelo de negocio y perfiles</div>
+    </div>
+    <div class="slide-body">
+      <div class="s7-left">
+        <div class="section-title">Estructura comercial</div>
+        <div class="model-card">
+          <div class="model-title">Lumina SWIFT Connector — esquema de precios</div>
+          <div class="model-row">
+            <div>
+              <div class="model-row-label">Fee de implementación</div>
+              <div class="model-row-note">Único, al inicio del proyecto</div>
+            </div>
+            <div class="model-row-value pending">A confirmar</div>
+          </div>
+          <div class="model-row">
+            <div>
+              <div class="model-row-label">Mantenimiento anual</div>
+              <div class="model-row-note">Soporte, actualizaciones, SLA</div>
+            </div>
+            <div class="model-row-value pending">A confirmar</div>
+          </div>
+          <div class="model-row">
+            <div>
+              <div class="model-row-label">Costo por transacción</div>
+              <div class="model-row-note">No aplica en este modelo</div>
+            </div>
+            <div class="model-row-value zero">$0</div>
+          </div>
+          <div class="model-row">
+            <div>
+              <div class="model-row-label">Costo por mensaje SWIFT enviado</div>
+              <div class="model-row-note">No aplica en este modelo</div>
+            </div>
+            <div class="model-row-value zero">$0</div>
+          </div>
+        </div>
+        <div class="roi-note">
+          <strong>Pendiente para fortalecer el ROI:</strong> Investigar tarifas por transacción de LGEC y SPT. Con ese dato se puede calcular el punto de equilibrio y mostrar en qué volumen Lumina resulta más barato — el argumento más poderoso de la propuesta.
+        </div>
+      </div>
+      <div class="s7-right">
+        <div class="section-title">Perfil del cliente ideal</div>
+        <div class="icp-card" style="border-left:3px solid #AFA9EC">
+          <div class="icp-card-title">Capa 1 — Cliente Lumina con LGEC/SPT activo</div>
+          <div class="icp-card-body">Institución que ya opera con Lumina Operations o Treasury en México, conectada a INDEVAL vía LGEC o SPT. Busca estabilidad operativa y reducción de costos sin cambiar de ecosistema.</div>
+          <div class="profil-tags">
+            <span class="ptag">Dir. de Operaciones</span>
+            <span class="ptag">CTO / CIO</span>
+            <span class="ptag">Riesgo operativo</span>
+            <span class="ptag">Presupuesto TI fijo</span>
+          </div>
+        </div>
+        <div class="icp-card" style="border-left:3px solid #5DCAA5; margin-top:10px;">
+          <div class="icp-card-title">Capa 2 — Institución sin Lumina con LGEC/SPT</div>
+          <div class="icp-card-body">Casa de bolsa o banco que usa LGEC o SPT como su canal a INDEVAL y busca reemplazarlo. La API compatible hace que migrar sea un ajuste técnico menor, no un proyecto mayor.</div>
+          <div class="profil-tags">
+            <span class="ptag">Casas de bolsa MX</span>
+            <span class="ptag">Bancos con mesa de dinero</span>
+            <span class="ptag">CTO / CIO</span>
+            <span class="ptag">Dir. de Operaciones</span>
+          </div>
+        </div>
+        <div class="icp-card" style="margin-top:10px;">
+          <div class="icp-card-title">Argumento por perfil de interlocutor</div>
+          <div class="icp-card-body">
+            <strong style="color:var(--white)">Dir. Operaciones / Back-Office:</strong> Control total, trazabilidad, contingencia, STP en T+1.<br>
+            <strong style="color:var(--white)">CTO / CIO:</strong> Sin dependencia de tercero, arquitectura directa, costo fijo, REST/JSON.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE 8 — POR QUÉ LUMINA AMERICAS ===== -->
+  <div class="slide s8" id="slide-8">
+    <div class="slide-header">
+      <div class="logo-text">
+        <span class="logo-dot"></span><span class="logo-dot"></span>
+        <span class="logo-lumina"> lumina</span><span class="logo-americas">americas</span>
+      </div>
+      <div class="slide-label">Por qué Lumina Americas</div>
+    </div>
+    <div class="slide-body">
+      <div class="section-title">Experiencia y credenciales</div>
+      <div class="credencial-grid">
+        <div class="cred-card">
+          <div class="cred-num">14+</div>
+          <div class="cred-label">años en mercados financieros de América Latina</div>
+        </div>
+        <div class="cred-card">
+          <div class="cred-num">100+</div>
+          <div class="cred-label">profesionales con expertise técnico y financiero</div>
+        </div>
+        <div class="cred-card">
+          <div class="cred-num">1</div>
+          <div class="cred-label">cliente ya activo con SWIFT Connector en producción</div>
+        </div>
+        <div class="cred-card">
+          <div class="cred-num">3</div>
+          <div class="cred-label">países con presencia: Argentina, México y España</div>
+        </div>
+      </div>
+      <div class="section-title" style="margin-top:18px">Clientes activos en México y LATAM</div>
+      <div class="client-grid">
+        <div class="client-pill highlight">JPMorgan Chase</div>
+        <div class="client-pill highlight">HSBC</div>
+        <div class="client-pill highlight">Deutsche Bank</div>
+        <div class="client-pill highlight">Barclays</div>
+        <div class="client-pill highlight">UBS</div>
+        <div class="client-pill">Credit Suisse</div>
+        <div class="client-pill">BTG Pactual</div>
+        <div class="client-pill">Intercam Casa de Bolsa</div>
+        <div class="client-pill">Actinver</div>
+        <div class="client-pill">Kuspit</div>
+        <div class="client-pill">Banco Base</div>
+        <div class="client-pill">BanRegio</div>
+        <div class="client-pill">Multiva</div>
+        <div class="client-pill">Altor</div>
+        <div class="client-pill">BHD León</div>
+      </div>
+      <div class="s8-copy">
+        Lumina Americas nació como spin-off del equipo de desarrollo regional de <strong>JPMorgan Chase Bank</strong> (2001). Nuestra suite cubre el ciclo completo de las instituciones financieras: <strong>Lumina Treasury, Operations, Order Management, Mutual Funds, Asset Management y Trading Station</strong> — con el SWIFT Connector como componente nativo del ecosistema.
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE 9 — PRÓXIMOS PASOS ===== -->
+  <div class="slide s9" id="slide-9">
+    <div class="slide-header">
+      <div class="logo-text">
+        <span class="logo-dot"></span><span class="logo-dot"></span>
+        <span class="logo-lumina"> lumina</span><span class="logo-americas">americas</span>
+      </div>
+      <div class="slide-label">Próximos pasos</div>
+    </div>
+    <div class="slide-body">
+      <div class="s9-bg"></div>
+      <div class="s9-lines"></div>
+      <div class="s9-content">
+        <div class="s9-title">¿Cómo avanzamos?</div>
+        <div class="s9-sub">Tres pasos concretos para evaluar e implementar Lumina SWIFT Connector</div>
+        <div class="steps-grid">
+          <div class="step-card">
+            <div class="step-num">01</div>
+            <div class="step-title">Demo técnica</div>
+            <div class="step-body">Sesión de demo del conector en un entorno real — monitor de mensajes, workflow de back-office, consultas REST. 60 minutos con el equipo técnico de Lumina.</div>
+          </div>
+          <div class="step-card">
+            <div class="step-num">02</div>
+            <div class="step-title">Assessment de migración</div>
+            <div class="step-body">Análisis de la arquitectura actual (LGEC/SPT + SWIFT Gateway) para identificar el esfuerzo de migración, riesgos y cronograma estimado.</div>
+          </div>
+          <div class="step-card">
+            <div class="step-num">03</div>
+            <div class="step-title">Propuesta formal</div>
+            <div class="step-body">Propuesta con fee de implementación, esquema de mantenimiento, SLA y plan de proyecto — basada en el assessment previo.</div>
+          </div>
+        </div>
+        <div class="contact-box">
+          <div>
+            <div class="contact-label">Contacto Lumina Americas · México</div>
+            <div class="contact-value">info@luminaamericas.com &nbsp;·&nbsp; +52 (55) 5985-0559</div>
+          </div>
+          <div>
+            <div class="contact-label">Sitio web</div>
+            <div class="contact-value">www.luminaamericas.com</div>
+          </div>
+          <button class="contact-cta">Agendar demo →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end .deck -->
+
+<!-- NAV -->
+<div class="nav">
+  <button class="nav-btn" id="prev-btn">←</button>
+  <div class="nav-dots" id="nav-dots"></div>
+  <button class="nav-btn" id="next-btn">→</button>
+  <div class="slide-counter" id="counter">1 / 9</div>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const dots = document.getElementById('nav-dots');
+  const counter = document.getElementById('counter');
+  let current = 0;
+  const total = slides.length;
+
+  // Build dots
+  slides.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.addEventListener('click', () => goTo(i));
+    dots.appendChild(d);
+  });
+
+  function goTo(n) {
+    slides[current].classList.remove('active');
+    dots.children[current].classList.remove('active');
+    current = (n + total) % total;
+    slides[current].classList.add('active');
+    dots.children[current].classList.add('active');
+    counter.textContent = (current + 1) + ' / ' + total;
+  }
+
+  document.getElementById('prev-btn').addEventListener('click', () => goTo(current - 1));
+  document.getElementById('next-btn').addEventListener('click', () => goTo(current + 1));
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') goTo(current + 1);
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') goTo(current - 1);
+  });
+</script>
+</body>
+</html>
