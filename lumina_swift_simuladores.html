@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simuladores de Pricing — Lumina SWIFT Connector</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #2E2E57; --blue: #4A92CE; --blue-p: #e8f3fc;
+  --text: #1a1a2e; --text-s: #4a4a6a; --text-m: #808285;
+  --border: #dde3f0; --off: #f7f8fc;
+  --green: #1D9E75; --green-p: #e1f5ee;
+  --amber: #EF9F27; --amber-p: #faeeda;
+  --red: #E24B4A; --red-p: #fcebeb;
+}
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'DM Sans',sans-serif; background:#f0f2f8; color:var(--text); padding:40px 24px; }
+
+.page-header { max-width:860px; margin:0 auto 32px; }
+.page-header-top { display:flex; align-items:center; gap:10px; margin-bottom:16px; }
+.logo { font-size:15px; font-weight:600; }
+.logo-l { color:var(--navy); }
+.logo-a { color:var(--blue); }
+.logo-dots { display:inline-flex; gap:3px; margin-right:3px; align-items:center; }
+.logo-dot { width:4px; height:4px; border-radius:50%; background:var(--blue); }
+.page-tag { font-size:11px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:var(--text-m); border:1px solid var(--border); padding:3px 10px; border-radius:20px; }
+.page-title { font-size:28px; font-weight:300; color:var(--navy); letter-spacing:-0.01em; margin-bottom:6px; }
+.page-title strong { font-weight:600; }
+.page-sub { font-size:14px; color:var(--text-s); line-height:1.65; }
+
+.card { background:white; border:1px solid var(--border); border-radius:14px; max-width:860px; margin:0 auto 24px; overflow:hidden; }
+.card-header { background:var(--navy); padding:18px 24px; display:flex; align-items:flex-start; justify-content:space-between; gap:16px; }
+.card-header-title { font-size:15px; font-weight:500; color:white; margin-bottom:3px; }
+.card-header-sub { font-size:12px; color:rgba(255,255,255,0.5); }
+.card-body { padding:24px; }
+
+/* INSTRUCCIONES */
+.how-it-works { background:var(--off); border:1px solid var(--border); border-radius:10px; padding:16px 20px; margin-bottom:24px; }
+.how-title { font-size:12px; font-weight:600; color:var(--navy); margin-bottom:10px; display:flex; align-items:center; gap:7px; }
+.how-title::after { content:''; flex:1; height:1px; background:var(--border); }
+.how-steps { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+.how-step { }
+.how-step-num { font-size:10px; font-weight:700; color:var(--blue); font-family:'DM Mono',monospace; margin-bottom:3px; }
+.how-step-title { font-size:12px; font-weight:600; color:var(--navy); margin-bottom:2px; }
+.how-step-body { font-size:11px; color:var(--text-s); line-height:1.55; }
+
+/* SUPUESTOS */
+.assumptions { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:20px; }
+.assumption-card { background:var(--off); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
+.assumption-title { font-size:11px; font-weight:600; color:var(--navy); margin-bottom:4px; }
+.assumption-body { font-size:11px; color:var(--text-s); line-height:1.55; }
+.assumption-card.warn { border-color:#EF9F27; background:var(--amber-p); }
+.assumption-card.warn .assumption-title { color:#633806; }
+.assumption-card.warn .assumption-body { color:#854F0B; }
+
+/* TABS */
+.tabs { display:flex; gap:6px; margin-bottom:20px; flex-wrap:wrap; }
+.tab { padding:6px 16px; border-radius:6px; border:1px solid var(--border); background:var(--off); color:var(--text-s); cursor:pointer; font-size:13px; font-weight:500; font-family:'DM Sans',sans-serif; transition:all 0.15s; }
+.tab.active { background:white; border-color:var(--navy); color:var(--navy); border-width:1.5px; }
+.panel { display:none; }
+.panel.active { display:block; }
+
+/* METRIC CARDS */
+.metrics { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:16px; }
+.mcard { background:var(--off); border-radius:8px; padding:14px; }
+.mlabel { font-size:11px; color:var(--text-s); margin-bottom:4px; }
+.mval { font-size:20px; font-weight:500; line-height:1; }
+
+/* TABLES */
+.tbl { width:100%; border-collapse:collapse; font-size:12px; }
+.tbl th { font-size:10px; font-weight:600; color:var(--text-m); padding:6px 10px; border-bottom:1px solid var(--border); text-align:left; text-transform:uppercase; letter-spacing:0.05em; }
+.tbl td { padding:8px 10px; border-bottom:1px solid var(--border); color:var(--text-s); vertical-align:middle; }
+.tbl tr:last-child td { border-bottom:none; }
+.tbl .lrow td { background:var(--green-p); color:var(--navy); font-weight:600; }
+.tbl .total td { font-weight:600; color:var(--navy); border-top:1.5px solid var(--border); }
+.bdg { display:inline-block; font-size:10px; font-weight:600; padding:2px 7px; border-radius:8px; }
+.bg { background:var(--green-p); color:#085041; }
+.bb { background:var(--blue-p); color:#0C447C; }
+.br { background:var(--red-p); color:#A32D2D; }
+.ba { background:var(--amber-p); color:#633806; }
+
+/* SLIDERS */
+.sl-row { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+.sl-label { font-size:12px; color:var(--text-s); min-width:200px; }
+.sl-val { font-size:13px; font-weight:600; min-width:52px; text-align:right; color:var(--navy); font-family:'DM Mono',monospace; }
+
+/* INSIGHT */
+.insight { border-radius:0 8px 8px 0; padding:10px 14px; font-size:12px; line-height:1.6; border-left:3px solid; margin-top:10px; }
+.ig { background:var(--green-p); border-color:var(--green); color:#27500A; }
+.ia { background:var(--amber-p); border-color:var(--amber); color:#633806; }
+.ib { background:var(--blue-p); border-color:var(--blue); color:#0C447C; }
+
+/* CHARTS */
+.ch { position:relative; width:100%; height:200px; margin-top:12px; }
+
+/* CALLOUT */
+.callout { border:1.5px solid var(--blue); border-radius:8px; padding:14px 18px; background:var(--blue-p); margin-bottom:16px; }
+.callout-t { font-size:13px; font-weight:600; color:#0C447C; margin-bottom:4px; }
+.callout-b { font-size:12px; color:#185FA5; line-height:1.65; }
+
+.grid2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px; }
+.inner-card { background:var(--off); border:1px solid var(--border); border-radius:8px; padding:16px; }
+.inner-card-title { font-size:13px; font-weight:600; color:var(--navy); margin-bottom:10px; }
+
+.note { font-size:11px; color:var(--text-m); margin-top:8px; font-style:italic; }
+
+@media(max-width:600px) {
+  .how-steps { grid-template-columns:1fr; }
+  .assumptions { grid-template-columns:1fr; }
+  .metrics { grid-template-columns:repeat(2,1fr); }
+  .grid2 { grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <div class="page-header-top">
+    <div class="logo">
+      <span class="logo-dots"><span class="logo-dot"></span><span class="logo-dot"></span></span>
+      <span class="logo-l">lumina</span><span class="logo-a">americas</span>
+    </div>
+    <div class="page-tag">Uso interno · Equipo comercial</div>
+  </div>
+  <div class="page-title">Simuladores de pricing — <strong>SWIFT Connector</strong></div>
+  <div class="page-sub">Herramienta para construir y ajustar escenarios comerciales. Los parámetros son editables — usá los sliders para explorar distintos supuestos antes de presentar una propuesta.</div>
+</div>
+
+<!-- ─── CARD 1: LÓGICA Y SUPUESTOS ─────────────── -->
+<div class="card">
+  <div class="card-header">
+    <div>
+      <div class="card-header-title">Lógica del modelo — cómo leer los simuladores</div>
+      <div class="card-header-sub">Supuestos base · Reglas de comparación · Qué validar</div>
+    </div>
+  </div>
+  <div class="card-body">
+
+    <div class="how-it-works">
+      <div class="how-title">Cómo funciona cada simulador</div>
+      <div class="how-steps">
+        <div class="how-step">
+          <div class="how-step-num">01 — Escenarios</div>
+          <div class="how-step-title">3 proyecciones de facturación</div>
+          <div class="how-step-body">Conservador (3 C1), Moderado (6 C1 + 2 C2) y Optimista (9 C1 + 5 C2). Muestra facturación año 1 e ingreso recurrente desde año 2. Los valores del pricing base están fijos — para ajustarlos usá el Simulador.</div>
+        </div>
+        <div class="how-step">
+          <div class="how-step-num">02 — Comparativa recurrente</div>
+          <div class="how-step-title">El argumento de ahorro para C1</div>
+          <div class="how-step-body">Compara <em>solo el costo recurrente anual</em> de Lumina vs. LGEC/SPT. Muestra el ahorro acumulado a 5 años y el costo total comparativo. Es la vista que usás en la conversación con el cliente.</div>
+        </div>
+        <div class="how-step">
+          <div class="how-step-num">03 — Simulador interactivo</div>
+          <div class="how-step-title">Ajustá cualquier parámetro</div>
+          <div class="how-step-body">Sliders para número de clientes, precios de implementación, mantenimiento y el costo actual del competidor. Los resultados y el argumento de ahorro se actualizan en tiempo real.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="assumptions">
+      <div class="assumption-card">
+        <div class="assumption-title">Regla clave — Capa 1 vs. Capa 2</div>
+        <div class="assumption-body">Los clientes Capa 1 <strong>ya pagaron la implementación de SPT/LGEC</strong>. La comparativa relevante es solo el costo recurrente. La implementación de Lumina ($12K) es un costo de migración único — no compite con nada porque el cliente ya no tiene ese gasto pendiente con su proveedor.<br><br>Para Capa 2 (nuevos prospectos sin Lumina), sí aplica comparar implementación + recurrente — allí Lumina también gana en ambas dimensiones.</div>
+      </div>
+      <div class="assumption-card">
+        <div class="assumption-title">Supuestos del modelo base</div>
+        <div class="assumption-body">
+          <strong>Impl. C1:</strong> $12,000 USD (competitivo vs. LGEC $15K–$45K)<br>
+          <strong>Impl. C2:</strong> $20,000 USD (standalone + onboarding)<br>
+          <strong>Mant. C1:</strong> $18,000 USD/año<br>
+          <strong>Mant. C2:</strong> $24,000 USD/año<br>
+          <strong>LGEC/SPT estimado:</strong> $24K–$72K/año (rango medio $48K)<br>
+          <strong>Costo transacción:</strong> $0 (diferenciador clave)
+        </div>
+      </div>
+      <div class="assumption-card warn">
+        <div class="assumption-title">⚠ Pendiente de validar antes de presentar</div>
+        <div class="assumption-body">El pricing de LGEC/SPT es estimado — son empresas privadas que no publican tarifas. Confirmar con un cliente existente cuánto paga actualmente antes de usar el argumento de ahorro en una propuesta formal. El rango $24K–$72K/año está basado en inteligencia de mercado indirecta.</div>
+      </div>
+      <div class="assumption-card warn">
+        <div class="assumption-title">⚠ Costo de desarrollo Capa 2</div>
+        <div class="assumption-body">Los escenarios que incluyen Capa 2 descuentan $50,000 USD de inversión interna de desarrollo (~3-4 meses). Este número hay que validar con el equipo de producto antes de comprometerse comercialmente con prospectos de Capa 2.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ─── CARD 2: SIMULADOR PRINCIPAL ────────────── -->
+<div class="card">
+  <div class="card-header">
+    <div>
+      <div class="card-header-title">Simulador 1 — Escenarios y facturación</div>
+      <div class="card-header-sub">Proyecciones · Tabla detallada · Comparativa de precios base</div>
+    </div>
+  </div>
+  <div class="card-body">
+
+    <div class="tabs">
+      <div class="tab active" onclick="show1('esc')">Escenarios</div>
+      <div class="tab" onclick="show1('tabla')">Tabla detallada</div>
+      <div class="tab" onclick="show1('precios')">Precios base vs. competidor</div>
+    </div>
+
+    <div class="panel active" id="p1-esc">
+      <div class="metrics">
+        <div class="mcard" style="border-top:3px solid #3B6D11">
+          <div class="mlabel">Conservador (3 C1)</div>
+          <div class="mval" style="color:#3B6D11">$90K</div>
+          <div class="note">Recurrente año 2+: $54K/año</div>
+        </div>
+        <div class="mcard" style="border-top:3px solid #185FA5">
+          <div class="mlabel">Moderado (6 C1 + 2 C2)</div>
+          <div class="mval" style="color:#185FA5">$196K</div>
+          <div class="note">Recurrente año 2+: $156K/año</div>
+        </div>
+        <div class="mcard" style="border-top:3px solid #854F0B">
+          <div class="mlabel">Optimista (9 C1 + 5 C2)</div>
+          <div class="mval" style="color:#854F0B">$382K</div>
+          <div class="note">Recurrente año 2+: $282K/año</div>
+        </div>
+        <div class="mcard" style="border-top:3px solid var(--blue)">
+          <div class="mlabel">MRR máximo (año 2+)</div>
+          <div class="mval" style="color:var(--blue)">$282K</div>
+          <div class="note">Escenario optimista, 100% base</div>
+        </div>
+      </div>
+      <div class="ch"><canvas id="esc-chart" role="img" aria-label="Gráficos de barras agrupadas por escenario">Escenarios conservador, moderado y optimista.</canvas></div>
+    </div>
+
+    <div class="panel" id="p1-tabla">
+      <div class="callout">
+        <div class="callout-t">Nota sobre la impl. Capa 1</div>
+        <div class="callout-b">La implementación de Capa 1 ($12K) aparece en la tabla como ingreso real — pero en la conversación con el cliente no se compara con nada porque ya amortizó su impl. de SPT/LGEC. El argumento de venta es el diferencial recurrente, no la implementación.</div>
+      </div>
+      <table class="tbl">
+        <thead><tr><th>Concepto</th><th>Conservador</th><th>Moderado</th><th>Optimista</th></tr></thead>
+        <tbody>
+          <tr><td style="font-weight:600;color:var(--navy)">Clientes Capa 1</td><td>3</td><td>6</td><td>9</td></tr>
+          <tr><td>Impl. C1 @$12K <span class="bdg bb">migración única</span></td><td>$36,000</td><td>$72,000</td><td>$108,000</td></tr>
+          <tr><td>Mant. anual C1 @$18K</td><td>$54,000</td><td>$108,000</td><td>$162,000</td></tr>
+          <tr><td style="font-weight:600;color:var(--navy)">Clientes Capa 2</td><td>0</td><td>2</td><td>5</td></tr>
+          <tr><td>Impl. C2 @$20K</td><td>$0</td><td>$40,000</td><td>$100,000</td></tr>
+          <tr><td>Mant. anual C2 @$24K</td><td>$0</td><td>$48,000</td><td>$120,000</td></tr>
+          <tr><td>Dev. C2 (inversión interna) <span class="bdg br">descuento</span></td><td>—</td><td style="color:var(--red)">($50,000)</td><td style="color:var(--red)">($50,000)</td></tr>
+          <tr class="total"><td>Facturación neta año 1</td><td style="color:#3B6D11">$90,000</td><td style="color:#185FA5">$196,000</td><td style="color:#854F0B">$382,000</td></tr>
+          <tr class="total"><td>Recurrente año 2+ (solo mant.)</td><td style="color:#3B6D11">$54K/año</td><td style="color:#185FA5">$156K/año</td><td style="color:#854F0B">$282K/año</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="panel" id="p1-precios">
+      <div class="grid2">
+        <div class="inner-card">
+          <div class="inner-card-title">Pricing Lumina (propuesto)</div>
+          <table class="tbl">
+            <thead><tr><th>Concepto</th><th>Monto</th></tr></thead>
+            <tbody>
+              <tr><td>Impl. Capa 1</td><td style="font-weight:600;color:var(--navy)">$12,000 USD</td></tr>
+              <tr><td>Impl. Capa 2</td><td style="font-weight:600;color:var(--navy)">$20,000 USD</td></tr>
+              <tr><td>Mant. anual C1</td><td style="font-weight:600;color:var(--navy)">$18,000 USD</td></tr>
+              <tr><td>Mant. anual C2</td><td style="font-weight:600;color:var(--navy)">$24,000 USD</td></tr>
+              <tr><td>Costo por transacción</td><td style="color:var(--green);font-weight:600">$0</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="inner-card">
+          <div class="inner-card-title">LGEC / SPT (estimado de mercado)</div>
+          <table class="tbl">
+            <thead><tr><th>Concepto</th><th>Rango estimado</th></tr></thead>
+            <tbody>
+              <tr><td>Implementación</td><td>$15,000 – $45,000 USD</td></tr>
+              <tr><td>Licencia mensual</td><td>$2,000 – $6,000 USD</td></tr>
+              <tr><td>Mant. anual equivalente</td><td>$24,000 – $72,000 USD</td></tr>
+              <tr><td>Costo por transacción</td><td style="color:var(--red);font-weight:600">Variable (cobra)</td></tr>
+            </tbody>
+          </table>
+          <div class="insight ia" style="margin-top:8px">Pricing estimado — no publicado. Validar con cliente antes de usar en propuesta formal.</div>
+        </div>
+      </div>
+      <div class="insight ib">
+        <strong>Diferencial clave en implementación para Capa 2:</strong> LGEC $15K–$45K vs. Lumina $20K — Lumina puede estar por debajo del rango medio del competidor ($30K) o dentro de él. El argumento más fuerte sigue siendo el recurrente anual ($18K vs. $24K–$72K).
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ─── CARD 3: COMPARATIVA RECURRENTE ─────────── -->
+<div class="card">
+  <div class="card-header">
+    <div>
+      <div class="card-header-title">Simulador 2 — Comparativa recurrente y ahorro para el cliente</div>
+      <div class="card-header-sub">El argumento de ROI para clientes Capa 1 · Ajustable con sliders</div>
+    </div>
+  </div>
+  <div class="card-body">
+
+    <div class="callout">
+      <div class="callout-t">Cómo usar este simulador en una conversación de ventas</div>
+      <div class="callout-b">Antes de la reunión: ajustá el slider "Mant. actual LGEC/SPT" al valor que paga ese cliente específico (si lo sabés). En la reunión podés mostrarlo directamente. El argumento que cierra: <em>"Usted paga $X/año hoy. Con Lumina paga $18K/año. El ahorro paga la implementación en Y meses."</em></div>
+    </div>
+
+    <div class="sl-row"><div class="sl-label">Mantenimiento Lumina C1 (USD/año)</div><input type="range" min="10000" max="30000" value="18000" step="1000" id="r-m1" oninput="calcRec()"><div class="sl-val" id="ro-m1">$18K</div></div>
+    <div class="sl-row"><div class="sl-label">Mant. actual LGEC/SPT por cliente (USD/año)</div><input type="range" min="24000" max="72000" value="48000" step="2000" id="r-comp" oninput="calcRec()"><div class="sl-val" id="ro-comp">$48K</div></div>
+    <div class="sl-row"><div class="sl-label">Clientes Capa 1 a migrar</div><input type="range" min="1" max="9" value="4" step="1" id="r-c1" oninput="calcRec()"><div class="sl-val" id="ro-c1">4</div></div>
+    <div class="sl-row"><div class="sl-label">Impl. Lumina C1 (USD)</div><input type="range" min="8000" max="20000" value="12000" step="1000" id="r-impl" oninput="calcRec()"><div class="sl-val" id="ro-impl">$12K</div></div>
+
+    <div class="metrics" style="margin-top:16px">
+      <div class="mcard"><div class="mlabel">Ahorro por cliente / año</div><div class="mval" style="color:var(--green)" id="rec-sav-1">$30K</div></div>
+      <div class="mcard"><div class="mlabel">Ahorro total C1 año 1</div><div class="mval" style="color:var(--green)" id="rec-sav-tot">$120K</div></div>
+      <div class="mcard"><div class="mlabel">Payback impl. por cliente</div><div class="mval" style="color:var(--blue)" id="rec-payback">5 meses</div></div>
+      <div class="mcard"><div class="mlabel">Ahorro acumulado 5 años</div><div class="mval" style="color:var(--green)" id="rec-5y">$600K</div></div>
+    </div>
+
+    <div class="grid2">
+      <div class="inner-card">
+        <div class="inner-card-title">Costo recurrente acumulado a 5 años — 1 cliente</div>
+        <div class="ch"><canvas id="rec-chart" role="img" aria-label="Comparativa costo recurrente a 5 años entre Lumina y LGEC/SPT">Costo acumulado comparativo.</canvas></div>
+      </div>
+      <div class="inner-card">
+        <div class="inner-card-title">Ahorro acumulado total (todos los clientes C1)</div>
+        <div class="ch"><canvas id="sav-chart" role="img" aria-label="Ahorro acumulado total para todos los clientes Capa 1">Ahorro acumulado por año.</canvas></div>
+      </div>
+    </div>
+
+    <div class="insight ig" id="rec-insight">Con 4 clientes y $30K de ahorro por cliente, el portafolio C1 ahorra $120K en año 1. El argumento es concreto y calculable antes de cada reunión.</div>
+
+  </div>
+</div>
+
+<!-- ─── CARD 4: SIMULADOR LIBRE ─────────────────── -->
+<div class="card">
+  <div class="card-header">
+    <div>
+      <div class="card-header-title">Simulador 3 — Facturación libre con todos los parámetros</div>
+      <div class="card-header-sub">Para explorar escenarios personalizados antes de armar una propuesta</div>
+    </div>
+  </div>
+  <div class="card-body">
+
+    <div class="assumptions" style="margin-bottom:20px">
+      <div class="assumption-card">
+        <div class="assumption-title">Cuándo usar este simulador</div>
+        <div class="assumption-body">Cuando tenés un cliente concreto y querés construir la propuesta con sus números reales. Ajustá cada parámetro individualmente y usá el desglose de barras para entender la composición de la facturación antes de presentar.</div>
+      </div>
+      <div class="assumption-card">
+        <div class="assumption-title">Qué no incluye</div>
+        <div class="assumption-body">No incluye el costo interno de los proyectos de implementación (horas de consultoría, soporte técnico). Tampoco descuenta automáticamente el costo de desarrollo de Capa 2 — hay que sumarlo manualmente si corresponde.</div>
+      </div>
+    </div>
+
+    <div class="sl-row"><div class="sl-label">Clientes Capa 1</div><input type="range" min="0" max="9" value="5" step="1" id="f-c1" oninput="calcFree()"><div class="sl-val" id="fo-c1">5</div></div>
+    <div class="sl-row"><div class="sl-label">Clientes Capa 2</div><input type="range" min="0" max="10" value="2" step="1" id="f-c2" oninput="calcFree()"><div class="sl-val" id="fo-c2">2</div></div>
+    <div class="sl-row"><div class="sl-label">Precio impl. Capa 1 (USD)</div><input type="range" min="6000" max="30000" value="12000" step="1000" id="f-p1" oninput="calcFree()"><div class="sl-val" id="fo-p1">$12K</div></div>
+    <div class="sl-row"><div class="sl-label">Precio impl. Capa 2 (USD)</div><input type="range" min="10000" max="50000" value="20000" step="1000" id="f-p2" oninput="calcFree()"><div class="sl-val" id="fo-p2">$20K</div></div>
+    <div class="sl-row"><div class="sl-label">Mantenimiento anual Capa 1 (USD)</div><input type="range" min="10000" max="36000" value="18000" step="1000" id="f-m1" oninput="calcFree()"><div class="sl-val" id="fo-m1">$18K</div></div>
+    <div class="sl-row"><div class="sl-label">Mantenimiento anual Capa 2 (USD)</div><input type="range" min="12000" max="48000" value="24000" step="1000" id="f-m2" oninput="calcFree()"><div class="sl-val" id="fo-m2">$24K</div></div>
+
+    <div class="metrics" style="margin-top:16px">
+      <div class="mcard"><div class="mlabel">Total impl. año 1</div><div class="mval" id="f-impl" style="color:var(--navy)">$100K</div></div>
+      <div class="mcard"><div class="mlabel">Total mant. año 1</div><div class="mval" id="f-mant" style="color:var(--green)">$138K</div></div>
+      <div class="mcard"><div class="mlabel">Facturación total año 1</div><div class="mval" id="f-tot" style="color:var(--blue)">$238K</div></div>
+      <div class="mcard"><div class="mlabel">Recurrente año 2+</div><div class="mval" id="f-mrr" style="color:var(--green)">$138K</div></div>
+    </div>
+
+    <div class="ch"><canvas id="free-chart" role="img" aria-label="Desglose de facturación por componente">Facturación por componente.</canvas></div>
+    <div class="insight ib" id="free-insight" style="margin-top:10px">Desglose: $100K en implementaciones + $138K en mantenimiento. El recurrente crece con cada nuevo cliente sumado.</div>
+
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+function show1(id) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('p1-'+id).classList.add('active');
+  const idx = {esc:0, tabla:1, precios:2};
+  document.querySelectorAll('.tab')[idx[id]].classList.add('active');
+}
+
+// Escenarios chart
+new Chart(document.getElementById('esc-chart'), {
+  type:'bar',
+  data:{
+    labels:['Facturación año 1','Recurrente año 2+'],
+    datasets:[
+      {label:'Conservador',data:[90,54],backgroundColor:'#97C459',borderRadius:4,borderWidth:0},
+      {label:'Moderado',data:[196,156],backgroundColor:'#378ADD',borderRadius:4,borderWidth:0},
+      {label:'Optimista',data:[382,282],backgroundColor:'#854F0B',borderRadius:4,borderWidth:0}
+    ]
+  },
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11},boxWidth:10,padding:12}}},scales:{y:{ticks:{callback:v=>'$'+v+'K',font:{size:11}},grid:{color:'rgba(0,0,0,0.05)'}},x:{ticks:{font:{size:11}},grid:{display:false}}}}
+});
+
+// Recurrente simulador
+let recCh = null, savCh = null;
+function calcRec() {
+  const m1 = +document.getElementById('r-m1').value;
+  const comp = +document.getElementById('r-comp').value;
+  const c1 = +document.getElementById('r-c1').value;
+  const impl = +document.getElementById('r-impl').value;
+  document.getElementById('ro-m1').textContent = '$'+Math.round(m1/1000)+'K';
+  document.getElementById('ro-comp').textContent = '$'+Math.round(comp/1000)+'K';
+  document.getElementById('ro-c1').textContent = c1;
+  document.getElementById('ro-impl').textContent = '$'+Math.round(impl/1000)+'K';
+  const sav = comp - m1;
+  const savTot = sav * c1;
+  const pb = sav > 0 ? Math.round(impl/sav*12) : '—';
+  document.getElementById('rec-sav-1').textContent = '$'+Math.round(sav/1000)+'K';
+  document.getElementById('rec-sav-tot').textContent = '$'+Math.round(savTot/1000)+'K';
+  document.getElementById('rec-payback').textContent = sav>0 ? pb+' meses' : 'N/A';
+  document.getElementById('rec-5y').textContent = '$'+Math.round(savTot*5/1000)+'K';
+
+  const ins = document.getElementById('rec-insight');
+  if(sav > 0) {
+    ins.textContent = 'Con '+c1+' clientes y $'+Math.round(sav/1000)+'K de ahorro/cliente, el portafolio C1 ahorra $'+Math.round(savTot/1000)+'K en año 1. La implementación se recupera en '+pb+' meses por cliente.';
+    ins.className = 'insight ig';
+  } else {
+    ins.textContent = 'Con este pricing, Lumina resulta más caro que el competidor en recurrente. Considerar bajar el mantenimiento o reforzar con el argumento de control operativo.';
+    ins.className = 'insight ia';
+  }
+
+  const yrs = [1,2,3,4,5];
+  const lumData = yrs.map(y => Math.round(m1*y/1000));
+  const compData = yrs.map(y => Math.round(comp*y/1000));
+  const savData = yrs.map(y => Math.round(savTot*y/1000));
+
+  const recData = {
+    labels:['Año 1','Año 2','Año 3','Año 4','Año 5'],
+    datasets:[
+      {label:'Lumina C1',data:lumData,borderColor:'#378ADD',backgroundColor:'transparent',pointBackgroundColor:'#378ADD',tension:0.3,borderWidth:2.5},
+      {label:'LGEC/SPT',data:compData,borderColor:'#E24B4A',backgroundColor:'transparent',pointBackgroundColor:'#E24B4A',tension:0.3,borderWidth:2,borderDash:[5,3]}
+    ]
+  };
+  if(recCh){recCh.data=recData;recCh.update();}
+  else recCh = new Chart(document.getElementById('rec-chart'),{type:'line',data:recData,options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11},boxWidth:10,padding:10}}},scales:{y:{ticks:{callback:v=>'$'+v+'K',font:{size:11}},grid:{color:'rgba(0,0,0,0.05)'}},x:{ticks:{font:{size:11}},grid:{display:false}}}}});
+
+  const savD = {
+    labels:['Año 1','Año 2','Año 3','Año 4','Año 5'],
+    datasets:[{label:'Ahorro acumulado',data:savData,backgroundColor:'#97C459',borderRadius:4,borderWidth:0}]
+  };
+  if(savCh){savCh.data=savD;savCh.update();}
+  else savCh = new Chart(document.getElementById('sav-chart'),{type:'bar',data:savD,options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{ticks:{callback:v=>'$'+v+'K',font:{size:11}},grid:{color:'rgba(0,0,0,0.05)'}},x:{ticks:{font:{size:11}},grid:{display:false}}}}});
+}
+calcRec();
+
+// Free simulador
+let freeCh = null;
+function calcFree() {
+  const c1=+document.getElementById('f-c1').value, c2=+document.getElementById('f-c2').value;
+  const p1=+document.getElementById('f-p1').value, p2=+document.getElementById('f-p2').value;
+  const m1=+document.getElementById('f-m1').value, m2=+document.getElementById('f-m2').value;
+  document.getElementById('fo-c1').textContent=c1;
+  document.getElementById('fo-c2').textContent=c2;
+  document.getElementById('fo-p1').textContent='$'+Math.round(p1/1000)+'K';
+  document.getElementById('fo-p2').textContent='$'+Math.round(p2/1000)+'K';
+  document.getElementById('fo-m1').textContent='$'+Math.round(m1/1000)+'K';
+  document.getElementById('fo-m2').textContent='$'+Math.round(m2/1000)+'K';
+  const impl=c1*p1+c2*p2, mant=c1*m1+c2*m2, tot=impl+mant;
+  document.getElementById('f-impl').textContent='$'+Math.round(impl/1000)+'K';
+  document.getElementById('f-mant').textContent='$'+Math.round(mant/1000)+'K';
+  document.getElementById('f-tot').textContent='$'+Math.round(tot/1000)+'K';
+  document.getElementById('f-mrr').textContent='$'+Math.round(mant/1000)+'K';
+  document.getElementById('free-insight').textContent='Desglose: $'+Math.round(impl/1000)+'K en implementaciones + $'+Math.round(mant/1000)+'K en mantenimiento. El recurrente de año 2+ es $'+Math.round(mant/1000)+'K/año.';
+  const d={labels:['Impl. C1','Mant. C1','Impl. C2','Mant. C2'],datasets:[{data:[Math.round(c1*p1/1000),Math.round(c1*m1/1000),Math.round(c2*p2/1000),Math.round(c2*m2/1000)],backgroundColor:['#378ADD','#85B7EB','#1D9E75','#5DCAA5'],borderRadius:4,borderWidth:0}]};
+  if(freeCh){freeCh.data=d;freeCh.update();}
+  else freeCh=new Chart(document.getElementById('free-chart'),{type:'bar',data:d,options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{ticks:{callback:v=>'$'+v+'K',font:{size:11}},grid:{color:'rgba(0,0,0,0.05)'}},x:{ticks:{font:{size:11}},grid:{display:false}}}}});
+}
+calcFree();
+</script>
+</body>
+</html>
